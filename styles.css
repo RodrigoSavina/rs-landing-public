@@ -210,6 +210,24 @@ body.intro-active .btn-secondary {
     border-color: rgba(255, 255, 255, 0.28);
 }
 
+/* Fondo de pistas de circuito (imagen real) detrás del título/botones — oculto durante la intro de videos */
+.hero-circuit-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+    background-image: url("assets/Imagenes/Pistas2.png");
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+body:not(.intro-active) .hero-circuit-bg {
+    opacity: 1;
+}
+
 .header-container {
     max-width: var(--max-width);
     height: 100%;
@@ -1771,8 +1789,8 @@ body.intro-active .btn-secondary {
 
 .partners-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
 }
 
 .partner-card {
@@ -2203,6 +2221,7 @@ body.intro-active .btn-secondary {
     .hero-title { font-size: 2.75rem; }
     .hero-container { gap: 32px; }
     .services-grid { gap: 24px; }
+    .partners-grid { grid-template-columns: 1fr; gap: 32px; }
     .solutions-grid { grid-template-columns: repeat(3, 1fr); }
     .process-stepper { grid-template-columns: repeat(2, 1fr); }
     .contact-layout { grid-template-columns: 1fr 1fr; gap: 40px; }
@@ -2357,6 +2376,7 @@ body.intro-active .btn-secondary {
    RESPONSIVE — MÓVIL PEQUEÑO (≤ 480px)
    ========================================================================= */
 @media (max-width: 480px) {
+
     .hero-title {
         font-size: 1.75rem;
         background: none;

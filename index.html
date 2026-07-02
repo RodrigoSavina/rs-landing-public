@@ -1,19 +1,24 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="R&S Automatización Inteligente — Alianza técnica de EficyTec y Grupo Rocha Solutions. Creamos soluciones digitales a medida con IA, automatización y desarrollo de sistemas para empresas, pymes, comercios y profesionales.">
+    <meta name="description"
+        content="R&S Automatización Inteligente — Alianza técnica de EficyTec y Grupo Rocha Solutions. Creamos soluciones digitales a medida con IA, automatización y desarrollo de sistemas para empresas, pymes, comercios y profesionales.">
     <title>R&S Automatización Inteligente | Soluciones a medida con IA e Infraestructura</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Stylesheet Link -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="cinematic-mode intro-active">
 
     <!-- Header / Navegación -->
@@ -22,15 +27,17 @@
             <a href="#inicio" class="logo-link">
                 <div class="header-brand-capsule">
                     <div class="header-logo-media">
-                        <video class="header-logo-video" id="header-logo-video" muted playsinline preload="none" aria-hidden="true">
+                        <video class="header-logo-video" id="header-logo-video" muted playsinline preload="none"
+                            aria-hidden="true">
                             <source src="assets/header-brand-intro.optimized.mp4" type="video/mp4">
                             <source src="assets/header-brand-intro.mp4" type="video/mp4">
                         </video>
-                        <img class="header-logo-final" id="header-logo-final" src="assets/header-brand-final-2.jpg" alt="Logo R&S Automatización Inteligente">
+                        <img class="header-logo-final" id="header-logo-final" src="assets/header-brand-final-2.jpg"
+                            alt="Logo R&S Automatización Inteligente">
                     </div>
                 </div>
             </a>
-            
+
             <!-- Menú Desktop -->
             <nav class="nav-menu" id="nav-menu">
                 <a href="#soluciones" class="nav-link">Soluciones</a>
@@ -39,10 +46,10 @@
                 <a href="#nosotros" class="nav-link">Nosotros</a>
                 <a href="#contacto" class="nav-btn-mobile">Hablar con nosotros</a>
             </nav>
-            
+
             <div class="header-actions">
                 <a href="#contacto" class="header-cta-btn">Hablar con nosotros</a>
-                
+
                 <!-- Botón Menú Hamburguesa Mobile -->
                 <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menú de navegación">
                     <span class="hamburger-line"></span>
@@ -54,34 +61,37 @@
     </header>
 
     <main>
-        
+
         <!-- Hero Section -->
         <section class="hero-section" id="inicio">
             <!-- Overlay de flash ambiental — se activa junto con el flash V1→V2 y cubre el área fuera del video -->
             <div class="hero-ambient-flash" id="hero-ambient-flash"></div>
+
+            <!-- Fondo de pistas de circuito (imagen real) — solo visible una vez termina la intro de videos -->
+            <div class="hero-circuit-bg" id="hero-circuit-bg" aria-hidden="true"></div>
+
             <div class="hero-container">
                 <!-- Bloque Visual Central: Secuencia de Videos + Contenido Final -->
                 <div class="hero-display-container" id="hero-display-container">
-                    
+
                     <!-- Capa de Video Intro (Estado Inicial) -->
                     <div class="video-container-layer active" id="video-layer">
                         <video id="hero-intro-video" autoplay muted playsinline preload="auto"
-                               poster="assets/logos/logo-rs.png"
-                               data-src-desktop="assets/intro-rs.desktop.mp4"
-                               data-src-mobile="assets/intro-rs.mobile.mp4">
+                            poster="assets/logos/logo-rs.png" data-src-desktop="assets/intro-rs.desktop.mp4"
+                            data-src-mobile="assets/intro-rs.mobile.mp4">
                             <source src="assets/intro-rs.mp4" type="video/mp4">
                         </video>
                         <video id="hero-intro-video-2" muted playsinline preload="metadata"
-                               data-src-desktop="assets/intro-rs-2.desktop.mp4"
-                               data-src-mobile="assets/intro-rs-2.mobile.mp4">
+                            data-src-desktop="assets/intro-rs-2.desktop.mp4"
+                            data-src-mobile="assets/intro-rs-2.mobile.mp4">
                             <source src="assets/intro-rs-2.mp4" type="video/mp4">
                         </video>
 
                         <!-- Puente de audio V2 → V3 (solo audio, visualmente oculto) -->
-                        <video id="v2-audio-bridge" muted playsinline preload="auto"
-                               aria-hidden="true" style="display:none;position:absolute;width:0;height:0;pointer-events:none;"
-                               data-src-desktop="assets/intro-rs-2.desktop.mp4"
-                               data-src-mobile="assets/intro-rs-2.mobile.mp4">
+                        <video id="v2-audio-bridge" muted playsinline preload="auto" aria-hidden="true"
+                            style="display:none;position:absolute;width:0;height:0;pointer-events:none;"
+                            data-src-desktop="assets/intro-rs-2.desktop.mp4"
+                            data-src-mobile="assets/intro-rs-2.mobile.mp4">
                             <source src="assets/intro-rs-2.mp4" type="video/mp4">
                         </video>
 
@@ -91,10 +101,22 @@
                         <!-- Botón de Activar Sonido / Silenciar -->
                         <button class="audio-toggle-btn" id="audio-toggle-btn" aria-label="Activar sonido del video">
                             <span class="audio-icon-muted-svg">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                                </svg>
                             </span>
                             <span class="audio-icon-unmuted-svg" style="display:none;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                </svg>
                             </span>
                         </button>
                     </div>
@@ -105,14 +127,21 @@
                             Automatizamos procesos con IA, software e infraestructura técnica
                         </h1>
                         <p class="hero-subtitle">
-                            Creamos soluciones digitales a medida para empresas, pymes, comercios y profesionales que necesitan ordenar consultas, monitorear operaciones, mejorar su gestión y reducir tareas manuales.
+                            Creamos soluciones digitales a medida para empresas, pymes, comercios y profesionales que
+                            necesitan ordenar consultas, monitorear operaciones, mejorar su gestión y reducir tareas
+                            manuales.
                         </p>
                         <div class="hero-actions">
                             <a href="#contacto" class="btn-primary">Hablar con nosotros</a>
                             <a href="#soluciones" class="btn-secondary">Ver soluciones</a>
                         </div>
                         <button class="btn-replay-intro" id="btn-replay-intro" aria-label="Ver presentación nuevamente">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.5"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="1 4 1 10 7 10"></polyline>
+                                <path d="M3.51 15a9 9 0 1 0 .49-3.5"></path>
+                            </svg>
                             <span>Ver presentación nuevamente</span>
                         </button>
                     </div>
@@ -145,7 +174,8 @@
                                     <span class="panel-service-num">01</span>
                                     <div class="panel-service-title-group">
                                         <h3 class="panel-service-title">Consultas y seguimiento comercial</h3>
-                                        <p class="panel-service-tagline">Canales ordenados, oportunidades que no se pierden.</p>
+                                        <p class="panel-service-tagline">Canales ordenados, oportunidades que no se
+                                            pierden.</p>
                                     </div>
                                 </div>
                                 <div class="panel-content-grid">
@@ -177,7 +207,8 @@
                                     <span class="panel-service-num">02</span>
                                     <div class="panel-service-title-group">
                                         <h3 class="panel-service-title">Monitoreo inteligente</h3>
-                                        <p class="panel-service-tagline">Infraestructura vigilada, fallas detectadas antes de escalar.</p>
+                                        <p class="panel-service-tagline">Infraestructura vigilada, fallas detectadas
+                                            antes de escalar.</p>
                                     </div>
                                 </div>
                                 <div class="panel-content-grid">
@@ -209,7 +240,8 @@
                                     <span class="panel-service-num">03</span>
                                     <div class="panel-service-title-group">
                                         <h3 class="panel-service-title">Gestión y facturación a medida</h3>
-                                        <p class="panel-service-tagline">Sistema simple, adaptado al modo real de trabajo de cada negocio.</p>
+                                        <p class="panel-service-tagline">Sistema simple, adaptado al modo real de
+                                            trabajo de cada negocio.</p>
                                     </div>
                                 </div>
                                 <div class="panel-content-grid">
@@ -241,7 +273,8 @@
                                     <span class="panel-service-num">04</span>
                                     <div class="panel-service-title-group">
                                         <h3 class="panel-service-title">Automatización operativa con IA</h3>
-                                        <p class="panel-service-tagline">Tareas repetitivas reducidas, herramientas conectadas, equipos más ágiles.</p>
+                                        <p class="panel-service-tagline">Tareas repetitivas reducidas, herramientas
+                                            conectadas, equipos más ágiles.</p>
                                     </div>
                                 </div>
                                 <div class="panel-content-grid">
@@ -272,12 +305,17 @@
 
                 <!-- Botones HUD de Servicios -->
                 <div class="hero-hud-grid" id="hud-grid">
-                    <button class="hud-card" id="hud-card-1" data-service="1" aria-label="Ver servicio Consultas y seguimiento comercial">
+                    <button class="hud-card" id="hud-card-1" data-service="1"
+                        aria-label="Ver servicio Consultas y seguimiento comercial">
                         <div class="hud-card-header">
                             <span class="hud-card-indicator"></span>
                             <span class="hud-card-num">01</span>
                             <span class="hud-card-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
                             </span>
                         </div>
                         <div class="hud-card-body">
@@ -285,12 +323,20 @@
                             <p class="hud-card-desc">WhatsApp y comercial</p>
                         </div>
                     </button>
-                    <button class="hud-card" id="hud-card-2" data-service="2" aria-label="Ver servicio Monitoreo inteligente">
+                    <button class="hud-card" id="hud-card-2" data-service="2"
+                        aria-label="Ver servicio Monitoreo inteligente">
                         <div class="hud-card-header">
                             <span class="hud-card-indicator"></span>
                             <span class="hud-card-num">02</span>
                             <span class="hud-card-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                    </path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
                             </span>
                         </div>
                         <div class="hud-card-body">
@@ -298,12 +344,20 @@
                             <p class="hud-card-desc">Cámaras y servidores</p>
                         </div>
                     </button>
-                    <button class="hud-card" id="hud-card-3" data-service="3" aria-label="Ver servicio Gestión y facturación a medida">
+                    <button class="hud-card" id="hud-card-3" data-service="3"
+                        aria-label="Ver servicio Gestión y facturación a medida">
                         <div class="hud-card-header">
                             <span class="hud-card-indicator"></span>
                             <span class="hud-card-num">03</span>
                             <span class="hud-card-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="4"></line><line x1="8" y1="2" x2="8" y2="4"></line><line x1="3" y1="8" x2="21" y2="8"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="4"></line>
+                                    <line x1="8" y1="2" x2="8" y2="4"></line>
+                                    <line x1="3" y1="8" x2="21" y2="8"></line>
+                                </svg>
                             </span>
                         </div>
                         <div class="hud-card-body">
@@ -311,12 +365,26 @@
                             <p class="hud-card-desc">Facturas y balances</p>
                         </div>
                     </button>
-                    <button class="hud-card" id="hud-card-4" data-service="4" aria-label="Ver servicio Automatización operativa con IA">
+                    <button class="hud-card" id="hud-card-4" data-service="4"
+                        aria-label="Ver servicio Automatización operativa con IA">
                         <div class="hud-card-header">
                             <span class="hud-card-indicator"></span>
                             <span class="hud-card-num">04</span>
                             <span class="hud-card-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                                    <rect x="9" y="9" width="6" height="6"></rect>
+                                    <line x1="9" y1="1" x2="9" y2="4"></line>
+                                    <line x1="15" y1="1" x2="15" y2="4"></line>
+                                    <line x1="9" y1="20" x2="9" y2="23"></line>
+                                    <line x1="15" y1="20" x2="15" y2="23"></line>
+                                    <line x1="20" y1="9" x2="23" y2="9"></line>
+                                    <line x1="20" y1="15" x2="23" y2="15"></line>
+                                    <line x1="1" y1="9" x2="4" y2="9"></line>
+                                    <line x1="1" y1="15" x2="4" y2="15"></line>
+                                </svg>
                             </span>
                         </div>
                         <div class="hud-card-body">
@@ -337,31 +405,39 @@
                         Procesos manuales, consultas dispersas y sistemas que no se hablan entre sí
                     </h2>
                 </div>
-                
+
                 <div class="problem-content-grid reveal-scroll">
                     <div class="problem-text-column">
                         <p class="problem-lead-text">
-                            Diseñamos soluciones para comercios y profesionales que reciben consultas por distintos canales, y para pymes, comercios y equipos que dependen de planillas, chats o tareas manuales. Ayudamos a ordenar esos puntos críticos y convertirlos en procesos más claros, medibles y automatizados, reduciendo la carga de tareas repetitivas.
+                            Diseñamos soluciones para comercios y profesionales que reciben consultas por distintos
+                            canales, y para pymes, comercios y equipos que dependen de planillas, chats o tareas
+                            manuales. Ayudamos a ordenar esos puntos críticos y convertirlos en procesos más claros,
+                            medibles y automatizados, reduciendo la carga de tareas repetitivas.
                         </p>
                     </div>
-                    
+
                     <div class="problem-list-column">
                         <h3 class="problem-subtitle">¿Cuáles son los cuellos de botella más comunes?</h3>
                         <ul class="pain-points-list">
                             <li>
-                                <strong>Consultas perdidas:</strong> Mensajes de clientes potenciales que quedan sin responder o se contestan tarde.
+                                <strong>Consultas perdidas:</strong> Mensajes de clientes potenciales que quedan sin
+                                responder o se contestan tarde.
                             </li>
                             <li>
-                                <strong>Seguimientos informales:</strong> Ventas o contratos que se intentan ordenar con memoria, cuadernos o chats sueltos.
+                                <strong>Seguimientos informales:</strong> Ventas o contratos que se intentan ordenar con
+                                memoria, cuadernos o chats sueltos.
                             </li>
                             <li>
-                                <strong>Tareas repetitivas:</strong> Horas perdidas copiando datos a mano entre emails, Excel y CRM.
+                                <strong>Tareas repetitivas:</strong> Horas perdidas copiando datos a mano entre emails,
+                                Excel y CRM.
                             </li>
                             <li>
-                                <strong>Infraestructura a ciegas:</strong> Cámaras de seguridad o servidores críticos que fallan sin que nadie lo note a tiempo.
+                                <strong>Infraestructura a ciegas:</strong> Cámaras de seguridad o servidores críticos
+                                que fallan sin que nadie lo note a tiempo.
                             </li>
                             <li>
-                                <strong>Sistemas rígidos:</strong> Programas de gestión gigantescos, difíciles y costosos que no encajan en el negocio real.
+                                <strong>Sistemas rígidos:</strong> Programas de gestión gigantescos, difíciles y
+                                costosos que no encajan en el negocio real.
                             </li>
                         </ul>
                     </div>
@@ -376,68 +452,113 @@
                     <span class="section-tag">Nuestras Soluciones Especializadas</span>
                     <h2 class="section-title">Soluciones digitales para automatizar, monitorear y gestionar mejor</h2>
                     <p class="section-subtitle">
-                        Combinamos IA, automatización, desarrollo a medida e infraestructura técnica para crear soluciones adaptadas a cada empresa.
+                        Combinamos IA, automatización, desarrollo a medida e infraestructura técnica para crear
+                        soluciones adaptadas a cada empresa.
                     </p>
                 </div>
 
                 <div class="services-grid">
                     <!-- Servicio 1 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-1" style="--stagger-index: 1;">
+                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-1"
+                        style="--stagger-index: 1;">
                         <div class="service-icon-wrapper">
                             <!-- Icono: Mensaje / Conversación -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
                         </div>
                         <h3 class="service-card-title">1. Automatización de consultas y seguimiento comercial</h3>
                         <p class="service-card-text">
-                            Organizamos consultas, clientes potenciales y oportunidades comerciales para que ningún contacto se pierda y el seguimiento sea más simple y ordenado.
+                            Organizamos consultas, clientes potenciales y oportunidades comerciales para que ningún
+                            contacto se pierda y el seguimiento sea más simple y ordenado.
                         </p>
                         <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/CRM.png" alt="CRM de consultas" class="service-card-thumb" loading="lazy">
+                            <img src="assets/Imagenes/CRM.png" alt="CRM de consultas" class="service-card-thumb"
+                                loading="lazy">
                         </div>
                     </div>
 
                     <!-- Servicio 2 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-2" style="--stagger-index: 2;">
+                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-2"
+                        style="--stagger-index: 2;">
                         <div class="service-icon-wrapper">
                             <!-- Icono: Radar / Monitoreo / Cámara -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                </path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
                         </div>
                         <h3 class="service-card-title">2. Monitoreo inteligente de cámaras y sistemas críticos</h3>
                         <p class="service-card-text">
-                            Detectamos fallas, generamos reportes y orientamos al técnico con información clara sobre cámaras, servidores o infraestructura crítica.
+                            Detectamos fallas, generamos reportes y orientamos al técnico con información clara sobre
+                            cámaras, servidores o infraestructura crítica.
                         </p>
                         <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png" alt="Sistema de monitoreo de cámaras" class="service-card-thumb" loading="lazy">
+                            <img src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png"
+                                alt="Sistema de monitoreo de cámaras" class="service-card-thumb" loading="lazy">
                         </div>
                     </div>
 
                     <!-- Servicio 3 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-3" style="--stagger-index: 3;">
+                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-3"
+                        style="--stagger-index: 3;">
                         <div class="service-icon-wrapper">
                             <!-- Icono: Factura / Panel administrativo -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="4"></line><line x1="8" y1="2" x2="8" y2="4"></line><line x1="3" y1="8" x2="21" y2="8"></line></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="4"></line>
+                                <line x1="8" y1="2" x2="8" y2="4"></line>
+                                <line x1="3" y1="8" x2="21" y2="8"></line>
+                            </svg>
                         </div>
                         <h3 class="service-card-title">3. Sistemas de facturación y gestión a medida</h3>
                         <p class="service-card-text">
-                            Diseñamos sistemas simples para pymes, comercios y profesionales que necesitan facturar, ordenar clientes, registrar ventas y consultar reportes sin plataformas complejas.
+                            Diseñamos sistemas simples para pymes, comercios y profesionales que necesitan facturar,
+                            ordenar clientes, registrar ventas y consultar reportes sin plataformas complejas.
                         </p>
                         <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/gestion-facturacion-inteligente.jpg" alt="Panel de facturación y gestión" class="service-card-thumb" loading="lazy">
+                            <img src="assets/Imagenes/gestion-facturacion-inteligente.jpg"
+                                alt="Panel de facturación y gestión" class="service-card-thumb" loading="lazy">
                         </div>
                     </div>
 
                     <!-- Servicio 4 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-4" style="--stagger-index: 4;">
+                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-4"
+                        style="--stagger-index: 4;">
                         <div class="service-icon-wrapper">
                             <!-- Icono: Chip / IA / Nodos -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                                <rect x="9" y="9" width="6" height="6"></rect>
+                                <line x1="9" y1="1" x2="9" y2="4"></line>
+                                <line x1="15" y1="1" x2="15" y2="4"></line>
+                                <line x1="9" y1="20" x2="9" y2="23"></line>
+                                <line x1="15" y1="20" x2="15" y2="23"></line>
+                                <line x1="20" y1="9" x2="23" y2="9"></line>
+                                <line x1="20" y1="15" x2="23" y2="15"></line>
+                                <line x1="1" y1="9" x2="4" y2="9"></line>
+                                <line x1="1" y1="15" x2="4" y2="15"></line>
+                            </svg>
                         </div>
                         <h3 class="service-card-title">4. Automatización operativa con IA</h3>
                         <p class="service-card-text">
-                            Integramos herramientas y procesos para automatizar tareas repetitivas, generar reportes, enviar alertas y asistir equipos internos.
+                            Integramos herramientas y procesos para automatizar tareas repetitivas, generar reportes,
+                            enviar alertas y asistir equipos internos.
                         </p>
                         <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png" alt="Centro de automatización operativa con IA" class="service-card-thumb" loading="lazy">
+                            <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
+                                alt="Centro de automatización operativa con IA" class="service-card-thumb"
+                                loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -452,18 +573,16 @@
                         <span class="section-tag">En la práctica</span>
                         <h2 class="crm-showcase-title">Así se ve una consulta que no se pierde</h2>
                         <p class="crm-showcase-desc">
-                            Cada mensaje que llega — por WhatsApp, formulario o redes — queda registrado, asignado y con seguimiento visible para todo el equipo. Sin planillas, sin memoria, sin nada que se escape.
+                            Cada mensaje que llega — por WhatsApp, formulario o redes — queda registrado, asignado y con
+                            seguimiento visible para todo el equipo. Sin planillas, sin memoria, sin nada que se escape.
                         </p>
                         <a href="#contacto" class="btn-primary">Hablar con nosotros</a>
                     </div>
                     <div class="crm-showcase-visual">
                         <div class="crm-screen-frame">
-                            <img
-                                src="assets/Imagenes/Panel%20de%20consultas%20comerciales%20multicanal.png"
+                            <img src="assets/Imagenes/Panel%20de%20consultas%20comerciales%20multicanal.png"
                                 alt="Panel de consultas multicanal — WhatsApp, formularios y redes en una sola bandeja — R&S Automatización Inteligente"
-                                class="crm-screen-img"
-                                loading="lazy"
-                            >
+                                class="crm-screen-img" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -477,19 +596,18 @@
                     <span class="section-tag">Ejemplos de Aplicación</span>
                     <h2 class="section-title">Soluciones que podemos construir a medida</h2>
                     <p class="section-subtitle">
-                        Cada empresa trabaja de forma distinta. Por eso no ofrecemos soluciones genéricas: analizamos el proceso, detectamos tareas repetitivas o puntos críticos, y diseñamos una herramienta adaptada al problema real.
+                        Cada empresa trabaja de forma distinta. Por eso no ofrecemos soluciones genéricas: analizamos el
+                        proceso, detectamos tareas repetitivas o puntos críticos, y diseñamos una herramienta adaptada
+                        al problema real.
                     </p>
                 </div>
 
                 <!-- Visual ecosistema — visión holística antes de las soluciones -->
                 <div class="solutions-ecosystem-visual reveal-scroll">
                     <div class="ecosystem-frame">
-                        <img
-                            src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
-                            alt="Ecosistema de automatización R&S — todos los procesos conectados"
-                            class="ecosystem-img"
-                            loading="lazy"
-                        >
+                        <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
+                            alt="Ecosistema de automatización R&S — todos los procesos conectados" class="ecosystem-img"
+                            loading="lazy">
                         <div class="ecosystem-overlay">
                             <p class="ecosystem-caption">Una plataforma que conecta todos los procesos de tu negocio</p>
                         </div>
@@ -501,7 +619,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 1;">
                         <h4 class="solution-title">Monitoreo inteligente de cámaras</h4>
                         <p class="solution-text">
-                            Detectá fallas, consultá estados y generá reportes técnicos de cámaras, servidores o sistemas críticos desde un panel centralizado.
+                            Detectá fallas, consultá estados y generá reportes técnicos de cámaras, servidores o
+                            sistemas críticos desde un panel centralizado.
                         </p>
                     </div>
 
@@ -509,7 +628,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 2;">
                         <h4 class="solution-title">Facturación simple para pymes, comercios y profesionales</h4>
                         <p class="solution-text">
-                            Ordená clientes, productos, ventas y reportes con un sistema adaptado a tu forma de trabajo, sin complejidades innecesarias.
+                            Ordená clientes, productos, ventas y reportes con un sistema adaptado a tu forma de trabajo,
+                            sin complejidades innecesarias.
                         </p>
                     </div>
 
@@ -517,7 +637,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 3;">
                         <h4 class="solution-title">Seguimiento comercial para inmobiliarias</h4>
                         <p class="solution-text">
-                            Organizá interesados, propiedades consultadas, próximos contactos y oportunidades comerciales en una misma interfaz estructurada.
+                            Organizá interesados, propiedades consultadas, próximos contactos y oportunidades
+                            comerciales en una misma interfaz estructurada.
                         </p>
                     </div>
 
@@ -525,7 +646,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 4;">
                         <h4 class="solution-title">Automatización de consultas comerciales</h4>
                         <p class="solution-text">
-                            Centralizá consultas de distintos canales (WhatsApp, Instagram, formularios), clasificá interesados y generá seguimientos automáticos.
+                            Centralizá consultas de distintos canales (WhatsApp, Instagram, formularios), clasificá
+                            interesados y generá seguimientos automáticos.
                         </p>
                     </div>
 
@@ -533,7 +655,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 5;">
                         <h4 class="solution-title">Dashboards administrativos</h4>
                         <p class="solution-text">
-                            Convertí datos dispersos en reportes visuales de ingresos, gastos, movimientos o actividad operativa del negocio.
+                            Convertí datos dispersos en reportes visuales de ingresos, gastos, movimientos o actividad
+                            operativa del negocio.
                         </p>
                     </div>
 
@@ -541,7 +664,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 6;">
                         <h4 class="solution-title">Asistentes internos con IA</h4>
                         <p class="solution-text">
-                            Creá asistentes personalizados para responder consultas del equipo sobre información interna del negocio, generar documentos o clasificar datos.
+                            Creá asistentes personalizados para responder consultas del equipo sobre información interna
+                            del negocio, generar documentos o clasificar datos.
                         </p>
                     </div>
 
@@ -549,7 +673,8 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 7;">
                         <h4 class="solution-title">Flujos inteligentes con n8n</h4>
                         <p class="solution-text">
-                            Conectá formularios, planillas, bases de datos y sistemas locales con herramientas en la nube para reducir el traspaso manual de datos.
+                            Conectá formularios, planillas, bases de datos y sistemas locales con herramientas en la
+                            nube para reducir el traspaso manual de datos.
                         </p>
                     </div>
 
@@ -557,14 +682,16 @@
                     <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 8;">
                         <h4 class="solution-title">Microherramientas a medida</h4>
                         <p class="solution-text">
-                            Resolvé tareas repetitivas y cuellos de botella específicos con pequeñas aplicaciones web internas, hechas a la medida de tu proceso.
+                            Resolvé tareas repetitivas y cuellos de botella específicos con pequeñas aplicaciones web
+                            internas, hechas a la medida de tu proceso.
                         </p>
                     </div>
                 </div>
-                
+
                 <div class="solutions-footer-note">
                     <p>
-                        > <strong>Nota:</strong> Estas soluciones son ejemplos construibles. Primero escuchamos tu necesidad, analizamos el proceso y luego proponemos una implementación concreta.
+                        > <strong>Nota:</strong> Estas soluciones son ejemplos construibles. Primero escuchamos tu
+                        necesidad, analizamos el proceso y luego proponemos una implementación concreta.
                     </p>
                 </div>
             </div>
@@ -578,18 +705,17 @@
                         <span class="section-tag">Gestión a medida</span>
                         <h2 class="crm-showcase-title">Facturación, paneles y control operativo en un solo lugar</h2>
                         <p class="crm-showcase-desc">
-                            Diseñamos sistemas para que pymes, comercios y profesionales puedan facturar, registrar clientes, ver ingresos y controlar su operación — sin depender de planillas ni programas complejos.
+                            Diseñamos sistemas para que pymes, comercios y profesionales puedan facturar, registrar
+                            clientes, ver ingresos y controlar su operación — sin depender de planillas ni programas
+                            complejos.
                         </p>
                         <a href="#contacto" class="btn-primary">Hablar con nosotros</a>
                     </div>
                     <div class="gestion-showcase-visual">
                         <div class="crm-screen-frame gestion-screen-frame">
-                            <img
-                                src="assets/Imagenes/gestion-facturacion-inteligente.jpg"
+                            <img src="assets/Imagenes/gestion-facturacion-inteligente.jpg"
                                 alt="Panel de gestión y facturación — R&S Automatización Inteligente"
-                                class="crm-screen-img"
-                                loading="lazy"
-                            >
+                                class="crm-screen-img" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -604,18 +730,16 @@
                         <span class="section-tag">Monitoreo inteligente</span>
                         <h2 class="crm-showcase-title">Alertas automáticas antes de que algo falle</h2>
                         <p class="crm-showcase-desc">
-                            Monitoreamos cámaras, servidores y sistemas críticos en tiempo real. Cuando algo cae o falla, el equipo recibe una alerta instantánea — sin esperar que un cliente lo reporte.
+                            Monitoreamos cámaras, servidores y sistemas críticos en tiempo real. Cuando algo cae o
+                            falla, el equipo recibe una alerta instantánea — sin esperar que un cliente lo reporte.
                         </p>
                         <a href="#contacto" class="btn-primary">Hablar con nosotros</a>
                     </div>
                     <div class="monitoreo-showcase-visual">
                         <div class="crm-screen-frame monitoreo-screen-frame">
-                            <img
-                                src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png"
+                            <img src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png"
                                 alt="Sistema inteligente de detección de fallas — R&S Automatización Inteligente"
-                                class="crm-screen-img"
-                                loading="lazy"
-                            >
+                                class="crm-screen-img" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -639,7 +763,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Relevamos el proceso</h3>
                             <p class="step-text">
-                                Escuchamos cómo trabaja tu empresa, qué tareas consumen tiempo y dónde aparecen los problemas y las demoras operativas.
+                                Escuchamos cómo trabaja tu empresa, qué tareas consumen tiempo y dónde aparecen los
+                                problemas y las demoras operativas.
                             </p>
                         </div>
                     </div>
@@ -652,7 +777,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Detectamos oportunidades</h3>
                             <p class="step-text">
-                                Identificamos qué procesos se pueden ordenar, automatizar, integrar o mejorar mediante el uso inteligente de software y hardware.
+                                Identificamos qué procesos se pueden ordenar, automatizar, integrar o mejorar mediante
+                                el uso inteligente de software y hardware.
                             </p>
                         </div>
                     </div>
@@ -665,7 +791,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Diseñamos una propuesta</h3>
                             <p class="step-text">
-                                Definimos una implementación posible, simple y escalable según el alcance real del problema y los objetivos de tu negocio.
+                                Definimos una implementación posible, simple y escalable según el alcance real del
+                                problema y los objetivos de tu negocio.
                             </p>
                         </div>
                     </div>
@@ -678,7 +805,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Construimos la primera versión</h3>
                             <p class="step-text">
-                                Desarrollamos un Producto Mínimo Viable (MVP) para probar con casos reales y validar que aporte valor inmediato.
+                                Desarrollamos un Producto Mínimo Viable (MVP) para probar con casos reales y validar que
+                                aporte valor inmediato.
                             </p>
                         </div>
                     </div>
@@ -691,7 +819,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Ajustamos e implementamos</h3>
                             <p class="step-text">
-                                Mejoramos y pulimos la solución de acuerdo al uso cotidiano y te acompañamos en toda la puesta en marcha en tu entorno de trabajo.
+                                Mejoramos y pulimos la solución de acuerdo al uso cotidiano y te acompañamos en toda la
+                                puesta en marcha en tu entorno de trabajo.
                             </p>
                         </div>
                     </div>
@@ -704,7 +833,8 @@
                         <div class="step-content">
                             <h3 class="step-title">Damos soporte y evolución</h3>
                             <p class="step-text">
-                                Realizamos un mantenimiento activo, ajustamos la herramienta al ritmo de tu negocio y la hacemos evolucionar para nuevas necesidades.
+                                Realizamos un mantenimiento activo, ajustamos la herramienta al ritmo de tu negocio y la
+                                hacemos evolucionar para nuevas necesidades.
                             </p>
                         </div>
                     </div>
@@ -717,37 +847,63 @@
             <div class="section-container">
                 <div class="section-header align-center">
                     <span class="section-tag">El Equipo</span>
-                    <h2 class="section-title">Dos perfiles técnicos, una solución integral</h2>
+                    <h2 class="section-title">Los perfiles detrás de la solución integral</h2>
                     <p class="section-subtitle">
-                        R&S Automatización Inteligente nace de la unión de dos perfiles complementarios para brindar respuestas robustas tanto en software e inteligencia de procesos como en infraestructura física y de redes.
+                        R&S Automatización Inteligente nace de la unión de perfiles complementarios para brindar
+                        respuestas robustas tanto en software e inteligencia de procesos como en infraestructura física,
+                        redes y comunicación.
                     </p>
                 </div>
 
                 <div class="partners-grid">
-                    <!-- Perfil 1: Rodrigo Savina -->
+                    <!-- Perfil 1: Marina Marcos & Soledad Bueno -->
                     <div class="partner-card reveal-scroll" style="--stagger-index: 1;">
                         <div class="partner-photo-placeholder has-photo">
-                            <img src="assets/Foto%20de%20perfil%20de%20Rodrigo.png" alt="Foto profesional de Rodrigo Savina" class="partner-photo-img">
+                            <img src="assets/marina-soledad.png"
+                                alt="Foto de Marina Marcos y Soledad Bueno" class="partner-photo-img">
+                        </div>
+                        <div class="partner-info">
+                            <h3 class="partner-name">Marina Marcos y Soledad Bueno</h3>
+                            <span class="partner-brand">Comunicación y Marketing Digital — Redes Sociales · Contenidos · Posicionamiento</span>
+                            <p class="partner-role">
+                                Aportan el desarrollo del área de comunicación y marketing digital, coordinando la
+                                presencia en redes sociales, la difusión de contenidos, la proyección de la marca y el
+                                acompañamiento en campañas orientadas al crecimiento comercial.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Perfil 2: Rodrigo Savina -->
+                    <div class="partner-card reveal-scroll" style="--stagger-index: 2;">
+                        <div class="partner-photo-placeholder has-photo">
+                            <img src="assets/Foto%20de%20perfil%20de%20Rodrigo.png"
+                                alt="Foto profesional de Rodrigo Savina" class="partner-photo-img">
                         </div>
                         <div class="partner-info">
                             <h3 class="partner-name">Rodrigo Savina</h3>
                             <span class="partner-brand">EficyTec — Eficiencia y Tecnología</span>
                             <p class="partner-role">
-                                Aporta la visión y experiencia en automatización de procesos, diseño funcional de flujos con n8n, desarrollo de soluciones con IA aplicada, ingeniería electrónica y consultoría de procesos comerciales.
+                                Aporta la visión y experiencia en automatización de procesos, diseño funcional de flujos
+                                con n8n, desarrollo de soluciones con IA aplicada, ingeniería electrónica y consultoría
+                                de procesos comerciales.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Perfil 2: Agustín Rocha -->
-                    <div class="partner-card reveal-scroll" style="--stagger-index: 2;">
+                    <!-- Perfil 3: Agustín Rocha -->
+                    <div class="partner-card reveal-scroll" style="--stagger-index: 3;">
                         <div class="partner-photo-placeholder has-photo">
-                            <img src="assets/Foto%20de%20perfil%20de%20Agustin.png" alt="Foto profesional de Agustín Rocha" class="partner-photo-img partner-photo-img--contain">
+                            <img src="assets/Foto%20de%20perfil%20de%20Agustin.png"
+                                alt="Foto profesional de Agustín Rocha"
+                                class="partner-photo-img partner-photo-img--contain">
                         </div>
                         <div class="partner-info">
                             <h3 class="partner-name">Agustín Rocha</h3>
                             <span class="partner-brand">Grupo Rocha Solutions — Seguridad · Redes · Energía</span>
                             <p class="partner-role">
-                                Aporta la infraestructura y capacidad de soporte técnico, administración de servidores, bases de datos backend, seguridad electrónica, instalación de sistemas de cámaras, redes críticas e implementación en campo.
+                                Aporta la infraestructura y capacidad de soporte técnico, administración de servidores,
+                                bases de datos backend, seguridad electrónica, instalación de sistemas de cámaras, redes
+                                críticas e implementación en campo.
                             </p>
                         </div>
                     </div>
@@ -764,24 +920,29 @@
                         <span class="section-tag">Hablemos</span>
                         <h2 class="section-title">Solicitá una evaluación gratuita</h2>
                         <p class="contact-lead-text">
-                            Contanos qué proceso querés automatizar, qué sistema querés mejorar o qué tarea te está consumiendo demasiado tiempo. Analizamos tu caso y te proponemos una solución digital a medida de tu forma de trabajo.
+                            Contanos qué proceso querés automatizar, qué sistema querés mejorar o qué tarea te está
+                            consumiendo demasiado tiempo. Analizamos tu caso y te proponemos una solución digital a
+                            medida de tu forma de trabajo.
                         </p>
-                        
+
                         <div class="direct-contact-channels">
                             <div class="contact-channel">
                                 <span class="channel-label">Email de contacto:</span>
-                                <a href="mailto:rys.automatizacion.inteligente@gmail.com" class="channel-link">rys.automatizacion.inteligente@gmail.com</a>
+                                <a href="mailto:rys.automatizacion.inteligente@gmail.com"
+                                    class="channel-link">rys.automatizacion.inteligente@gmail.com</a>
                             </div>
-                            
+
                             <div class="contact-channel">
                                 <span class="channel-label">Contacto directo por WhatsApp:</span>
                                 <div class="wa-buttons-container">
                                     <!-- WhatsApp Rodrigo Placeholder -->
-                                    <a href="https://wa.me/xxxxxxxxxxx" target="_blank" rel="noopener" class="wa-btn-placeholder">
+                                    <a href="https://wa.me/xxxxxxxxxxx" target="_blank" rel="noopener"
+                                        class="wa-btn-placeholder">
                                         [ WHATSAPP RODRIGO ]
                                     </a>
                                     <!-- WhatsApp Agustín Placeholder -->
-                                    <a href="https://wa.me/xxxxxxxxxxx" target="_blank" rel="noopener" class="wa-btn-placeholder">
+                                    <a href="https://wa.me/xxxxxxxxxxx" target="_blank" rel="noopener"
+                                        class="wa-btn-placeholder">
                                         [ WHATSAPP AGUSTÍN ]
                                     </a>
                                 </div>
@@ -796,20 +957,23 @@
                                 <label for="form-name">Nombre y apellido *</label>
                                 <input type="text" id="form-name" name="name" required placeholder="Tu nombre">
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="form-company">Empresa / Negocio / Profesión *</label>
-                                <input type="text" id="form-company" name="company" required placeholder="Nombre de tu negocio o rubro">
+                                <input type="text" id="form-company" name="company" required
+                                    placeholder="Nombre de tu negocio o rubro">
                             </div>
 
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label for="form-email">Correo electrónico *</label>
-                                    <input type="email" id="form-email" name="email" required placeholder="ejemplo@correo.com">
+                                    <input type="email" id="form-email" name="email" required
+                                        placeholder="ejemplo@correo.com">
                                 </div>
                                 <div class="form-group">
                                     <label for="form-phone">WhatsApp / Teléfono *</label>
-                                    <input type="tel" id="form-phone" name="phone" required placeholder="Código de área y número">
+                                    <input type="tel" id="form-phone" name="phone" required
+                                        placeholder="Código de área y número">
                                 </div>
                             </div>
 
@@ -820,12 +984,14 @@
 
                             <div class="form-group">
                                 <label for="form-process">¿Qué proceso te gustaría automatizar o mejorar? *</label>
-                                <textarea id="form-process" name="process" required rows="4" placeholder="Describinos brevemente la tarea o sistema que te gustaría automatizar..."></textarea>
+                                <textarea id="form-process" name="process" required rows="4"
+                                    placeholder="Describinos brevemente la tarea o sistema que te gustaría automatizar..."></textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="form-message">Mensaje o comentarios adicionales</label>
-                                <textarea id="form-message" name="message" rows="3" placeholder="Contanos algo más..."></textarea>
+                                <textarea id="form-message" name="message" rows="3"
+                                    placeholder="Contanos algo más..."></textarea>
                             </div>
 
                             <div class="form-group">
@@ -840,7 +1006,8 @@
 
                             <button type="submit" class="btn-submit">Enviar consulta</button>
 
-                            <p class="form-status-message" id="form-status-message" role="status" aria-live="polite"></p>
+                            <p class="form-status-message" id="form-status-message" role="status" aria-live="polite">
+                            </p>
                         </form>
                     </div>
                 </div>
@@ -861,7 +1028,7 @@
                     Soluciones digitales con IA, automatización y desarrollo de sistemas a medida.
                 </p>
             </div>
-            
+
             <div class="footer-links-column">
                 <h4 class="footer-heading">Navegación</h4>
                 <ul class="footer-links-list">
@@ -871,16 +1038,18 @@
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-contact-column">
                 <h4 class="footer-heading">Contacto</h4>
                 <ul class="footer-links-list">
-                    <li><a href="mailto:rys.automatizacion.inteligente@gmail.com">rys.automatizacion.inteligente@gmail.com</a></li>
+                    <li><a
+                            href="mailto:rys.automatizacion.inteligente@gmail.com">rys.automatizacion.inteligente@gmail.com</a>
+                    </li>
                     <li>WhatsApp (Ver canales arriba)</li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
             <p class="copyright-text">
                 © 2026 R&S Automatización Inteligente. Todos los derechos reservados.
@@ -891,5 +1060,5 @@
     <!-- Script de lógica de animación e interacciones -->
     <script src="script.js"></script>
 </body>
-</html>
 
+</html>
