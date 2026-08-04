@@ -1189,6 +1189,10 @@ body:not(.intro-active) .hero-circuit-bg {
     .hud-card.active[data-service="4"] {
         animation: none;
     }
+
+    .services-carousel {
+        scroll-behavior: auto;
+    }
 }
 
 /* =========================================================================
@@ -1341,17 +1345,121 @@ body:not(.intro-active) .hero-circuit-bg {
     border-bottom: 1px solid var(--border-light);
 }
 
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+/* Evita que quede una palabra sola colgando en la última línea del título */
+.services-section .section-title {
+    text-wrap: balance;
 }
 
+/* --- Carrusel: shell (flechas + pista) --- */
+.services-carousel-shell {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.services-carousel {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* padding/margin negativo: da aire al lift+sombra del hover sin abrir hueco visual */
+    padding: 10px 4px 28px;
+    margin: -10px -4px -28px;
+    outline: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.services-carousel::-webkit-scrollbar { display: none; }
+
+.services-carousel.dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+    cursor: grabbing;
+    user-select: none;
+}
+
+/* Se activa durante los reposicionamientos instantáneos (posición inicial y salto
+   invisible clon -> tarjeta real): sin animación y sin que el snap reencauce el salto */
+.services-carousel.no-animate {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+}
+
+/* Los clones de borde (.service-card-clone) los genera script.js para la navegación
+   circular. Son visualmente idénticos a las tarjetas reales — no llevan estilos propios. */
+
+.services-carousel:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 4px;
+}
+
+/* --- Flechas --- */
+.carousel-arrow {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-light-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.carousel-arrow:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--text-light);
+}
+.carousel-arrow:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+/* --- Puntos indicadores --- */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+.carousel-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--border-light);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.carousel-dot:hover { background-color: var(--accent-blue); opacity: 0.6; }
+.carousel-dot[aria-current="true"] {
+    width: 24px;
+    border-radius: 5px;
+    background-color: var(--accent-blue);
+}
+.carousel-dot:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+/* --- Tarjeta / slide --- */
 .service-card {
+    flex: 0 0 clamp(280px, 60%, 640px);
+    scroll-snap-align: start;
     background-color: var(--bg-light-card);
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius-md);
-    padding: 40px;
+    overflow: hidden;
+    padding: 0;
     transition: var(--transition-smooth);
     box-shadow: 0 4px 6px rgba(15, 23, 42, 0.02);
 }
@@ -1371,13 +1479,17 @@ body:not(.intro-active) .hero-circuit-bg {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     transition: var(--transition-smooth);
 }
 
 .service-card:hover .service-icon-wrapper {
     background-color: var(--accent-blue);
     color: var(--text-light);
+}
+
+.service-card-body {
+    padding: 28px 32px 32px;
 }
 
 .service-card-title {
@@ -1393,28 +1505,32 @@ body:not(.intro-active) .hero-circuit-bg {
     line-height: 1.6;
 }
 
-/* Mini preview en tarjetas de servicio */
+/* Imagen protagonista: 16:9, de borde a borde, arriba de la tarjeta.
+   Fondo propio porque object-fit:contain puede dejar franjas vacías
+   cuando la imagen no es exactamente 16:9 — así no se ve como un hueco roto. */
 .service-card-thumb-wrapper {
-    margin-top: 20px;
-    border-radius: 8px;
+    margin: 0;
+    border-radius: 0;
     overflow: hidden;
-    border: 1px solid rgba(37, 99, 235, 0.12);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 0;
+    box-shadow: none;
+    aspect-ratio: 16 / 9;
+    background-color: var(--bg-light-sec);
 }
 
 .service-card-thumb {
     display: block;
     width: 100%;
-    height: 130px;
-    object-fit: cover;
-    object-position: center top;
-    opacity: 0.86;
-    transition: transform 0.4s ease, opacity 0.3s ease;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    opacity: 1;
+    transition: transform 0.4s ease;
+    -webkit-user-drag: none;
 }
 
 .service-card:hover .service-card-thumb {
     transform: scale(1.04);
-    opacity: 1;
 }
 
 /* =========================================================================
@@ -2231,7 +2347,8 @@ body:not(.intro-active) .hero-circuit-bg {
 @media (max-width: 1024px) {
     .hero-title { font-size: 2.75rem; }
     .hero-container { gap: 32px; }
-    .services-grid { gap: 24px; }
+    .services-carousel { gap: 20px; }
+    .service-card { flex-basis: clamp(260px, 68%, 560px); }
     .partners-grid { grid-template-columns: 1fr; gap: 32px; }
     .solutions-grid { grid-template-columns: repeat(3, 1fr); }
     .process-stepper { grid-template-columns: repeat(2, 1fr); }
@@ -2373,7 +2490,12 @@ body:not(.intro-active) .hero-circuit-bg {
     .problem-text-column,
     .problem-list-column { padding: 24px; }
     .problem-lead-text { font-size: 1.15rem; padding-left: 16px; }
-    .services-grid { grid-template-columns: 1fr; }
+    .services-carousel-shell { gap: 0; }
+    .carousel-arrow { display: none; }
+    .services-carousel { gap: 16px; padding: 6px 4px 24px; margin: -6px -4px -24px; }
+    .service-card { flex-basis: calc(100% - 4px); }
+    .service-card-body { padding: 24px; }
+    .carousel-dots { margin-top: 18px; }
     .solutions-grid { grid-template-columns: repeat(2, 1fr); }
     .partners-grid { grid-template-columns: 1fr; }
     .contact-layout { grid-template-columns: 1fr; gap: 48px; }

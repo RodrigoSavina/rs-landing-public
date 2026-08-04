@@ -1,17 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     // =========================================================================
     // 1. MENU MOBILE (Hamburger Menu)
     // =========================================================================
     const hamburgerBtn = document.getElementById("hamburger-btn");
     const navMenu = document.getElementById("nav-menu");
-    
+
     if (hamburgerBtn && navMenu) {
         hamburgerBtn.addEventListener("click", () => {
             navMenu.classList.toggle("open");
             hamburgerBtn.classList.toggle("active");
         });
-        
+
         // Cerrar menú al hacer clic en enlaces de navegación o en el logo
         const navLinks = document.querySelectorAll(".nav-link, .nav-btn-mobile, .logo-link");
         navLinks.forEach(link => {
@@ -406,14 +406,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. REVEAL ANIMATIONS (Intersection Observer)
     // =========================================================================
     const revealElements = document.querySelectorAll(".reveal-scroll");
-    
+
     if (revealElements.length > 0 && "IntersectionObserver" in window) {
         const observerOptions = {
             root: null,
             rootMargin: "0px",
             threshold: 0.12 // Activa cuando el 12% del elemento entra en pantalla
         };
-        
+
         const revealObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }, observerOptions);
-        
+
         revealElements.forEach(el => {
             revealObserver.observe(el);
         });
@@ -487,6 +487,320 @@ document.addEventListener("DOMContentLoaded", () => {
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalText;
                 });
+        });
+    }
+
+    // =========================================================================
+    // 6. CARRUSEL DE SOLUCIONES ESPECIALIZADAS (#servicios) — circular con clones
+    // =========================================================================
+    const servicesCarousel = document.getElementById("services-carousel");
+
+    if (servicesCarousel) {
+        const carousel = servicesCarousel;
+        const shell = carousel.closest(".services-carousel-shell");
+        const section = carousel.closest(".services-section");
+        const prevBtn = document.getElementById("services-prev");
+        const nextBtn = document.getElementById("services-next");
+        const dotsContainer = document.getElementById("services-dots");
+
+        const realCards = Array.from(carousel.children);
+        const realCount = realCards.length;
+
+        const AUTOPLAY_MS = 3000;
+        const SETTLE_MS = 140;   // inactividad de scroll a partir de la cual damos el movimiento por terminado
+        const RESIZE_MS = 150;
+        const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        let slides = realCards;     // tras clonar incluye clones + tarjetas reales
+        let firstRealIndex = 0;     // posición de la primera tarjeta real dentro de `slides`
+        let autoplayTimer = null;
+        let autoplayDisabled = false; // true en cuanto hay cualquier interacción humana — ya no se reactiva
+        let sectionVisible = false;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragScrollStart = 0;
+        let settleTimer = null;
+        let scrollRAF = null;
+        let resizeTimer = null;
+
+        function reduceMotion() {
+            return reduceMotionQuery.matches;
+        }
+
+        // --- Clones de borde -------------------------------------------------
+        // Se clona un juego COMPLETO a cada lado, no una sola tarjeta: con un único
+        // clon el scroller vuelve a tocar su límite físico y el slide de destino no
+        // llega a alinearse al inicio (es la misma causa por la que la tarjeta 4 no
+        // podía centrarse). Un juego entero deja margen suficiente a ambos lados en
+        // todos los breakpoints, sin recalcular nada al redimensionar.
+        function makeClone(card) {
+            const clone = card.cloneNode(true);
+            clone.classList.add("service-card-clone");
+            clone.setAttribute("aria-hidden", "true");
+            clone.removeAttribute("id");
+            // Barrido defensivo: ningún id duplicado sobrevive dentro del clon
+            clone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
+            return clone;
+        }
+
+        function buildClones() {
+            if (realCount < 2) return;
+
+            const leading = document.createDocumentFragment();
+            const trailing = document.createDocumentFragment();
+            realCards.forEach((card) => {
+                leading.appendChild(makeClone(card));
+                trailing.appendChild(makeClone(card));
+            });
+
+            carousel.insertBefore(leading, carousel.firstChild);
+            carousel.appendChild(trailing);
+
+            slides = Array.from(carousel.children);
+            firstRealIndex = realCount;
+
+            // Mapa slide -> tarjeta real que representa (vale igual para clones y reales)
+            slides.forEach((slide, i) => {
+                const real = ((i - firstRealIndex) % realCount + realCount) % realCount;
+                slide.dataset.realIndex = String(real);
+            });
+        }
+
+        function isClone(slide) {
+            return !!slide && slide.classList.contains("service-card-clone");
+        }
+
+        // --- Posicionamiento -------------------------------------------------
+        // scrollLeft necesario para dejar un slide alineado al inicio. Se calcula por
+        // diferencia de offsetLeft entre hermanos: es exacto y no depende del padding
+        // del scroller ni de cómo el navegador resuelva el punto de snap.
+        function scrollPosFor(slide) {
+            return slide.offsetLeft - slides[0].offsetLeft;
+        }
+
+        function getCurrentSlideIndex() {
+            const pos = carousel.scrollLeft;
+            let closest = 0;
+            let min = Infinity;
+            slides.forEach((slide, i) => {
+                const dist = Math.abs(scrollPosFor(slide) - pos);
+                if (dist < min) {
+                    min = dist;
+                    closest = i;
+                }
+            });
+            return closest;
+        }
+
+        function getRealIndex() {
+            const slide = slides[getCurrentSlideIndex()];
+            if (!slide) return 0;
+            const real = Number(slide.dataset.realIndex);
+            return Number.isNaN(real) ? 0 : real;
+        }
+
+        // Reposiciona sin animación y con el scroll-snap desactivado, para que el
+        // navegador no reencauce ni anime el salto.
+        function withoutAnimation(apply) {
+            carousel.classList.add("no-animate");
+            apply();
+            void carousel.offsetWidth; // fuerza reflow: el salto queda aplicado ya
+            requestAnimationFrame(() => carousel.classList.remove("no-animate"));
+        }
+
+        function goToSlide(index, { instant = false } = {}) {
+            const target = slides[Math.max(0, Math.min(index, slides.length - 1))];
+            if (!target) return;
+            const left = scrollPosFor(target);
+
+            if (instant || reduceMotion()) {
+                withoutAnimation(() => { carousel.scrollLeft = left; });
+                updateDots();
+            } else {
+                carousel.scrollTo({ left: left, behavior: "smooth" });
+            }
+        }
+
+        // Salto invisible: si quedamos parados sobre un clon, saltamos a su tarjeta
+        // real conservando exactamente la misma posición visual (se desplaza por la
+        // distancia de layout entre ambos, así no se percibe ningún movimiento).
+        function normalizeIfClone() {
+            const slide = slides[getCurrentSlideIndex()];
+            if (!isClone(slide)) return;
+
+            const real = realCards[Number(slide.dataset.realIndex)];
+            if (!real) return;
+
+            const delta = slide.offsetLeft - real.offsetLeft;
+            if (!delta) return;
+
+            withoutAnimation(() => { carousel.scrollLeft -= delta; });
+        }
+
+        function scheduleSettle() {
+            if (settleTimer) clearTimeout(settleTimer);
+            settleTimer = setTimeout(() => {
+                settleTimer = null;
+                if (isDragging) return; // en medio de un arrastre no normalizamos
+                normalizeIfClone();
+                updateDots();
+            }, SETTLE_MS);
+        }
+
+        function updateDots() {
+            if (!dotsContainer) return;
+            const active = getRealIndex();
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+                if (i === active) dot.setAttribute("aria-current", "true");
+                else dot.removeAttribute("aria-current");
+            });
+        }
+
+        // --- Autoplay: avanza un slide por vez; los clones + normalización hacen el ciclo ---
+        function stopAutoplay() {
+            if (autoplayTimer) {
+                clearInterval(autoplayTimer);
+                autoplayTimer = null;
+            }
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            if (autoplayDisabled || reduceMotion() || !sectionVisible || document.hidden) return;
+            autoplayTimer = setInterval(() => {
+                goToSlide(getCurrentSlideIndex() + 1);
+            }, AUTOPLAY_MS);
+        }
+
+        // Se llama ante cualquier interacción humana. Es definitivo: no hay resume posterior.
+        function disableAutoplay() {
+            if (autoplayDisabled) return;
+            autoplayDisabled = true;
+            stopAutoplay();
+        }
+
+        // --- Navegación circular: misma ruta para flechas, teclado y autoplay ---
+        function manualNav(direction) {
+            goToSlide(getCurrentSlideIndex() + direction);
+            disableAutoplay();
+        }
+
+        // --- Arranque: primero los clones, después los puntos y la posición inicial ---
+        buildClones();
+
+        // Puntos indicadores: uno por tarjeta REAL (los clones no suman puntos)
+        if (dotsContainer) {
+            realCards.forEach((_, i) => {
+                const dot = document.createElement("button");
+                dot.type = "button";
+                dot.className = "carousel-dot";
+                dot.setAttribute("aria-label", `Ir a la solución ${i + 1}`);
+                dot.addEventListener("click", () => {
+                    goToSlide(firstRealIndex + i);
+                    disableAutoplay();
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Posición inicial sobre la primera tarjeta real. Se asigna scrollLeft directo
+        // (no scrollIntoView) para no arrastrar el scroll vertical de la página.
+        withoutAnimation(() => {
+            carousel.scrollLeft = scrollPosFor(slides[firstRealIndex]);
+        });
+        updateDots();
+
+        // --- Autoplay activo solo con la sección visible y la pestaña activa (hasta la primera interacción) ---
+        if ("IntersectionObserver" in window) {
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    sectionVisible = entry.isIntersecting;
+                    if (sectionVisible) startAutoplay();
+                    else stopAutoplay();
+                });
+            }, { threshold: 0.3 });
+            sectionObserver.observe(section || shell || carousel);
+        } else {
+            sectionVisible = true;
+            startAutoplay();
+        }
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) stopAutoplay();
+            else if (sectionVisible) startAutoplay();
+        });
+
+        if (typeof reduceMotionQuery.addEventListener === "function") {
+            reduceMotionQuery.addEventListener("change", () => {
+                if (reduceMotion()) stopAutoplay();
+                else if (sectionVisible) startAutoplay();
+            });
+        }
+
+        // --- Sincroniza puntos y dispara la normalización, venga de donde venga el
+        //     movimiento (autoplay, flechas, teclado, drag o swipe táctil) ---
+        carousel.addEventListener("scroll", () => {
+            if (!scrollRAF) {
+                scrollRAF = requestAnimationFrame(() => {
+                    updateDots();
+                    scrollRAF = null;
+                });
+            }
+            scheduleSettle();
+        }, { passive: true });
+
+        // --- Flechas anterior / siguiente (circular en ambos sentidos: 4→1 y 1→4) ---
+        if (prevBtn) prevBtn.addEventListener("click", () => manualNav(-1));
+        if (nextBtn) nextBtn.addEventListener("click", () => manualNav(1));
+
+        // --- Navegación por teclado (← →) cuando el carrusel tiene foco ---
+        carousel.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowRight") { e.preventDefault(); manualNav(1); }
+            else if (e.key === "ArrowLeft") { e.preventDefault(); manualNav(-1); }
+        });
+
+        // --- Click/tap sobre una tarjeta: cuenta como interacción humana ---
+        carousel.addEventListener("click", (e) => {
+            if (e.target.closest(".service-card")) disableAutoplay();
+        });
+
+        // --- Swipe/touch: cuenta como interacción humana (el gesto en sí lo maneja el scroll-snap nativo) ---
+        carousel.addEventListener("touchstart", disableAutoplay, { passive: true });
+
+        // --- Drag con mouse en desktop, incluida la imagen (el touch usa el swipe nativo del navegador) ---
+        carousel.addEventListener("pointerdown", (e) => {
+            if (e.pointerType !== "mouse") return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragScrollStart = carousel.scrollLeft;
+            carousel.classList.add("dragging");
+            disableAutoplay();
+            carousel.setPointerCapture(e.pointerId);
+        });
+
+        carousel.addEventListener("pointermove", (e) => {
+            if (!isDragging) return;
+            carousel.scrollLeft = dragScrollStart - (e.clientX - dragStartX);
+        });
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+            carousel.classList.remove("dragging");
+            goToSlide(getCurrentSlideIndex()); // completa el snap donde el usuario soltó
+            scheduleSettle();                  // y recién después normaliza si cayó sobre un clon
+        }
+        carousel.addEventListener("pointerup", endDrag);
+        carousel.addEventListener("pointercancel", endDrag);
+
+        // --- Reajuste tras cambio de tamaño: los slides cambian de ancho, así que se
+        //     vuelve a anclar la tarjeta real actual sin animación ---
+        window.addEventListener("resize", () => {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                resizeTimer = null;
+                goToSlide(firstRealIndex + getRealIndex(), { instant: true });
+            }, RESIZE_MS);
         });
     }
 

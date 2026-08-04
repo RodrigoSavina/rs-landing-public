@@ -457,111 +457,141 @@
                     </p>
                 </div>
 
-                <div class="services-grid">
-                    <!-- Servicio 1 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-1"
-                        style="--stagger-index: 1;">
-                        <div class="service-icon-wrapper">
-                            <!-- Icono: Mensaje / Conversación -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
+                <div class="services-carousel-shell reveal-scroll">
+                    <button class="carousel-arrow carousel-arrow-prev" id="services-prev" type="button"
+                        aria-label="Ver solución anterior">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="services-carousel" id="services-carousel" role="region"
+                        aria-roledescription="carrusel" aria-label="Soluciones especializadas" tabindex="0">
+                        <!-- Servicio 1 -->
+                        <div class="service-card" id="service-card-1">
+                            <div class="service-card-thumb-wrapper">
+                                <img src="assets/Imagenes/CRM.png" alt="CRM de consultas" class="service-card-thumb"
+                                    draggable="false">
+                            </div>
+                            <div class="service-card-body">
+                                <div class="service-icon-wrapper">
+                                    <!-- Icono: Mensaje / Conversación -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <h3 class="service-card-title">1. Automatización de consultas y seguimiento
+                                    comercial</h3>
+                                <p class="service-card-text">
+                                    Organizamos consultas, clientes potenciales y oportunidades comerciales para que
+                                    ningún contacto se pierda y el seguimiento sea más simple y ordenado.
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="service-card-title">1. Automatización de consultas y seguimiento comercial</h3>
-                        <p class="service-card-text">
-                            Organizamos consultas, clientes potenciales y oportunidades comerciales para que ningún
-                            contacto se pierda y el seguimiento sea más simple y ordenado.
-                        </p>
-                        <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/CRM.png" alt="CRM de consultas" class="service-card-thumb"
-                                loading="lazy">
-                        </div>
-                    </div>
 
-                    <!-- Servicio 2 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-2"
-                        style="--stagger-index: 2;">
-                        <div class="service-icon-wrapper">
-                            <!-- Icono: Radar / Monitoreo / Cámara -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path
-                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
-                                </path>
-                                <circle cx="12" cy="13" r="4"></circle>
-                            </svg>
+                        <!-- Servicio 2 -->
+                        <div class="service-card" id="service-card-2">
+                            <div class="service-card-thumb-wrapper">
+                                <img src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png"
+                                    alt="Sistema de monitoreo de cámaras" class="service-card-thumb" loading="lazy"
+                                    draggable="false">
+                            </div>
+                            <div class="service-card-body">
+                                <div class="service-icon-wrapper">
+                                    <!-- Icono: Radar / Monitoreo / Cámara -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                        </path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <h3 class="service-card-title">2. Monitoreo inteligente de cámaras y sistemas
+                                    críticos</h3>
+                                <p class="service-card-text">
+                                    Detectamos fallas, generamos reportes y orientamos al técnico con información
+                                    clara sobre cámaras, servidores o infraestructura crítica.
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="service-card-title">2. Monitoreo inteligente de cámaras y sistemas críticos</h3>
-                        <p class="service-card-text">
-                            Detectamos fallas, generamos reportes y orientamos al técnico con información clara sobre
-                            cámaras, servidores o infraestructura crítica.
-                        </p>
-                        <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/Detecci%C3%B3n%20de%20fallas%2C%20c%C3%A1maras%20ca%C3%ADdas%2C%20servidores%20offline%20y%20avisos%20autom%C3%A1ticos..png"
-                                alt="Sistema de monitoreo de cámaras" class="service-card-thumb" loading="lazy">
-                        </div>
-                    </div>
 
-                    <!-- Servicio 3 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-3"
-                        style="--stagger-index: 3;">
-                        <div class="service-icon-wrapper">
-                            <!-- Icono: Factura / Panel administrativo -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="4"></line>
-                                <line x1="8" y1="2" x2="8" y2="4"></line>
-                                <line x1="3" y1="8" x2="21" y2="8"></line>
-                            </svg>
+                        <!-- Servicio 3 -->
+                        <div class="service-card" id="service-card-3">
+                            <div class="service-card-thumb-wrapper">
+                                <img src="assets/Imagenes/gestion-facturacion-inteligente.jpg"
+                                    alt="Panel de facturación y gestión" class="service-card-thumb" loading="lazy"
+                                    draggable="false">
+                            </div>
+                            <div class="service-card-body">
+                                <div class="service-icon-wrapper">
+                                    <!-- Icono: Factura / Panel administrativo -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="4"></line>
+                                        <line x1="8" y1="2" x2="8" y2="4"></line>
+                                        <line x1="3" y1="8" x2="21" y2="8"></line>
+                                    </svg>
+                                </div>
+                                <h3 class="service-card-title">3. Sistemas de facturación y gestión a medida</h3>
+                                <p class="service-card-text">
+                                    Diseñamos sistemas simples para pymes, comercios y profesionales que necesitan
+                                    facturar, ordenar clientes, registrar ventas y consultar reportes sin plataformas
+                                    complejas.
+                                </p>
+                            </div>
                         </div>
-                        <h3 class="service-card-title">3. Sistemas de facturación y gestión a medida</h3>
-                        <p class="service-card-text">
-                            Diseñamos sistemas simples para pymes, comercios y profesionales que necesitan facturar,
-                            ordenar clientes, registrar ventas y consultar reportes sin plataformas complejas.
-                        </p>
-                        <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/gestion-facturacion-inteligente.jpg"
-                                alt="Panel de facturación y gestión" class="service-card-thumb" loading="lazy">
-                        </div>
-                    </div>
 
-                    <!-- Servicio 4 -->
-                    <div class="service-card reveal-scroll reveal-stagger" id="service-card-4"
-                        style="--stagger-index: 4;">
-                        <div class="service-icon-wrapper">
-                            <!-- Icono: Chip / IA / Nodos -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                                <rect x="9" y="9" width="6" height="6"></rect>
-                                <line x1="9" y1="1" x2="9" y2="4"></line>
-                                <line x1="15" y1="1" x2="15" y2="4"></line>
-                                <line x1="9" y1="20" x2="9" y2="23"></line>
-                                <line x1="15" y1="20" x2="15" y2="23"></line>
-                                <line x1="20" y1="9" x2="23" y2="9"></line>
-                                <line x1="20" y1="15" x2="23" y2="15"></line>
-                                <line x1="1" y1="9" x2="4" y2="9"></line>
-                                <line x1="1" y1="15" x2="4" y2="15"></line>
-                            </svg>
-                        </div>
-                        <h3 class="service-card-title">4. Automatización operativa con IA</h3>
-                        <p class="service-card-text">
-                            Integramos herramientas y procesos para automatizar tareas repetitivas, generar reportes,
-                            enviar alertas y asistir equipos internos.
-                        </p>
-                        <div class="service-card-thumb-wrapper">
-                            <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
-                                alt="Centro de automatización operativa con IA" class="service-card-thumb"
-                                loading="lazy">
+                        <!-- Servicio 4 -->
+                        <div class="service-card" id="service-card-4">
+                            <div class="service-card-thumb-wrapper">
+                                <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
+                                    alt="Centro de automatización operativa con IA" class="service-card-thumb"
+                                    loading="lazy" draggable="false">
+                            </div>
+                            <div class="service-card-body">
+                                <div class="service-icon-wrapper">
+                                    <!-- Icono: Chip / IA / Nodos -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                                        <rect x="9" y="9" width="6" height="6"></rect>
+                                        <line x1="9" y1="1" x2="9" y2="4"></line>
+                                        <line x1="15" y1="1" x2="15" y2="4"></line>
+                                        <line x1="9" y1="20" x2="9" y2="23"></line>
+                                        <line x1="15" y1="20" x2="15" y2="23"></line>
+                                        <line x1="20" y1="9" x2="23" y2="9"></line>
+                                        <line x1="20" y1="15" x2="23" y2="15"></line>
+                                        <line x1="1" y1="9" x2="4" y2="9"></line>
+                                        <line x1="1" y1="15" x2="4" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <h3 class="service-card-title">4. Automatización operativa con IA</h3>
+                                <p class="service-card-text">
+                                    Integramos herramientas y procesos para automatizar tareas repetitivas, generar
+                                    reportes, enviar alertas y asistir equipos internos.
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    <button class="carousel-arrow carousel-arrow-next" id="services-next" type="button"
+                        aria-label="Ver solución siguiente">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
                 </div>
+                <div class="carousel-dots" id="services-dots"></div>
             </div>
         </section>
 
