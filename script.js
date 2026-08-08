@@ -804,4 +804,121 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // =========================================================================
+    // 7. SELECTOR ORBITAL DE SOLUCIONES (#soluciones)
+    // =========================================================================
+    const solutionsOrbit = document.getElementById("solutions-orbit");
+
+    if (solutionsOrbit) {
+        const nodes = Array.from(solutionsOrbit.querySelectorAll(".orbit-node"));
+        const panels = Array.from(solutionsOrbit.querySelectorAll(".orbit-panel"));
+        const nodesContainer = document.getElementById("orbit-nodes");
+        const prevBtn = document.getElementById("orbit-prev");
+        const nextBtn = document.getElementById("orbit-next");
+        const counterEl = document.getElementById("orbit-counter");
+        const soundBtn = document.getElementById("orbit-sound");
+        const total = nodes.length;
+
+        let activeIndex = 0;
+        let audioCtx = null;
+        let soundOn = true;
+
+        // Preferencia de sonido recordada en la sesión (sessionStorage puede fallar
+        // en navegación privada — nunca debe romper la interfaz por eso).
+        try {
+            if (sessionStorage.getItem("rs-orbit-sound") === "off") soundOn = false;
+        } catch (e) {}
+
+        function updateSoundButton() {
+            if (!soundBtn) return;
+            soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
+            soundBtn.setAttribute(
+                "aria-label",
+                soundOn ? "Silenciar sonido de interacción" : "Activar sonido de interacción"
+            );
+        }
+        updateSoundButton();
+
+        // --- Tono corto vía Web Audio API — nunca en la carga, solo tras interacción ---
+        function playTick() {
+            if (!soundOn) return;
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === "suspended") audioCtx.resume();
+                const t = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(880, t);
+                osc.frequency.exponentialRampToValueAtTime(1320, t + 0.06);
+                gain.gain.setValueAtTime(0.0001, t);
+                gain.gain.exponentialRampToValueAtTime(0.055, t + 0.012);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.11);
+                osc.connect(gain).connect(audioCtx.destination);
+                osc.start(t);
+                osc.stop(t + 0.13);
+            } catch (e) {
+                // Cualquier fallo de Web Audio degrada en silencio, sin afectar la UI
+            }
+        }
+
+        if (soundBtn) {
+            soundBtn.addEventListener("click", () => {
+                soundOn = !soundOn;
+                updateSoundButton();
+                try { sessionStorage.setItem("rs-orbit-sound", soundOn ? "on" : "off"); } catch (e) {}
+            });
+        }
+
+        // Centra el nodo activo en la tira horizontal de mobile. En desktop
+        // .orbit-nodes no tiene overflow real, así que esto no hace nada allí.
+        function centerActiveNode() {
+            if (!nodesContainer) return;
+            if (nodesContainer.scrollWidth <= nodesContainer.clientWidth) return;
+            const node = nodes[activeIndex];
+            if (!node) return;
+            const target = node.offsetLeft - (nodesContainer.clientWidth - node.clientWidth) / 2;
+            nodesContainer.scrollTo({ left: target, behavior: "smooth" });
+        }
+
+        // Cambia la solución activa. sound=true solo debe pasarse ante interacción deliberada.
+        function setActive(index, { sound = false, focus = false } = {}) {
+            activeIndex = ((index % total) + total) % total;
+            nodes.forEach((n, k) => {
+                const on = k === activeIndex;
+                n.classList.toggle("is-active", on);
+                n.setAttribute("aria-selected", on ? "true" : "false");
+                n.tabIndex = on ? 0 : -1; // roving tabindex
+            });
+            panels.forEach((p, k) => p.classList.toggle("is-active", k === activeIndex));
+            if (counterEl) counterEl.textContent = String(activeIndex + 1).padStart(2, "0");
+            if (focus) nodes[activeIndex].focus();
+            if (sound) playTick();
+            centerActiveNode();
+        }
+
+        // --- Click / tap en un nodo orbital ---
+        nodes.forEach((node, i) => {
+            node.addEventListener("click", () => setActive(i, { sound: true }));
+        });
+
+        // --- Flechas anterior / siguiente — circular en ambos sentidos (8→1 y 1→8) ---
+        if (prevBtn) prevBtn.addEventListener("click", () => setActive(activeIndex - 1, { sound: true }));
+        if (nextBtn) nextBtn.addEventListener("click", () => setActive(activeIndex + 1, { sound: true }));
+
+        // --- Teclado sobre el tablist: flechas, Home/End. Enter/Espacio los maneja
+        //     el navegador solo por tratarse de <button> reales. ---
+        if (nodesContainer) {
+            nodesContainer.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight") { e.preventDefault(); setActive(activeIndex + 1, { sound: true, focus: true }); }
+                else if (e.key === "ArrowLeft") { e.preventDefault(); setActive(activeIndex - 1, { sound: true, focus: true }); }
+                else if (e.key === "Home") { e.preventDefault(); setActive(0, { sound: true, focus: true }); }
+                else if (e.key === "End") { e.preventDefault(); setActive(total - 1, { sound: true, focus: true }); }
+            });
+        }
+
+        // Estado inicial: sin sonido y sin robar foco — no es interacción del usuario
+        setActive(0);
+    }
+
 });

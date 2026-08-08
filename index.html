@@ -632,89 +632,311 @@
                     </p>
                 </div>
 
-                <!-- Visual ecosistema — visión holística antes de las soluciones -->
-                <div class="solutions-ecosystem-visual reveal-scroll">
-                    <div class="ecosystem-frame">
-                        <img src="assets/Imagenes/Centro%20de%20automatizaci%C3%B3n%20operativa%20con%20IA.png"
-                            alt="Ecosistema de automatización R&S — todos los procesos conectados" class="ecosystem-img"
-                            loading="lazy">
-                        <div class="ecosystem-overlay">
-                            <p class="ecosystem-caption">Una plataforma que conecta todos los procesos de tu negocio</p>
+                <div class="solutions-orbit reveal-scroll" id="solutions-orbit">
+                    <div class="orbit-stage">
+                        <!-- Anillos y puntos decorativos -->
+                        <div class="orbit-ring" aria-hidden="true"></div>
+                        <div class="orbit-ring-inner" aria-hidden="true"></div>
+                        <span class="orbit-dot" style="--i: 0.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 1.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 2.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 3.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 4.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 5.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 6.5;" aria-hidden="true"></span>
+                        <span class="orbit-dot" style="--i: 7.5;" aria-hidden="true"></span>
+
+                        <!-- Selectores orbitales -->
+                        <div class="orbit-nodes" id="orbit-nodes" role="tablist"
+                            aria-label="Soluciones que podemos construir a medida">
+                            <button class="orbit-node is-active" style="--i: 0;" type="button" role="tab"
+                                id="orbit-tab-0" aria-controls="orbit-panel-0" aria-selected="true" tabindex="0">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                        </path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Monitoreo de cámaras</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 1;" type="button" role="tab" id="orbit-tab-1"
+                                aria-controls="orbit-panel-1" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="9" y1="13" x2="15" y2="13"></line>
+                                        <line x1="9" y1="17" x2="13" y2="17"></line>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Facturación simple</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 2;" type="button" role="tab" id="orbit-tab-2"
+                                aria-controls="orbit-panel-2" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <circle cx="12" cy="10.5" r="2.5"></circle>
+                                        <path d="M7.5 18.5a4.7 4.7 0 0 1 9 0"></path>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Seguimiento comercial</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 3;" type="button" role="tab" id="orbit-tab-3"
+                                aria-controls="orbit-panel-3" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 9a2 2 0 0 1-2 2H6l-3 3V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2z"></path>
+                                        <path d="M18 9h1a2 2 0 0 1 2 2v9l-3-3h-6a2 2 0 0 1-2-2v-1"></path>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Consultas comerciales</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 4;" type="button" role="tab" id="orbit-tab-4"
+                                aria-controls="orbit-panel-4" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                        <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Dashboards</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 5;" type="button" role="tab" id="orbit-tab-5"
+                                aria-controls="orbit-panel-5" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="4" y="8" width="16" height="12" rx="2"></rect>
+                                        <line x1="12" y1="8" x2="12" y2="5"></line>
+                                        <circle cx="12" cy="3.5" r="1.5"></circle>
+                                        <line x1="9" y1="13" x2="9" y2="14"></line>
+                                        <line x1="15" y1="13" x2="15" y2="14"></line>
+                                        <path d="M9.5 17h5"></path>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Asistentes con IA</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 6;" type="button" role="tab" id="orbit-tab-6"
+                                aria-controls="orbit-panel-6" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="5" cy="12" r="2.5"></circle>
+                                        <circle cx="19" cy="6" r="2.5"></circle>
+                                        <circle cx="19" cy="18" r="2.5"></circle>
+                                        <line x1="7.2" y1="10.8" x2="16.8" y2="7.2"></line>
+                                        <line x1="7.2" y1="13.2" x2="16.8" y2="16.8"></line>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Flujos con n8n</span>
+                            </button>
+                            <button class="orbit-node" style="--i: 7;" type="button" role="tab" id="orbit-tab-7"
+                                aria-controls="orbit-panel-7" aria-selected="false" tabindex="-1">
+                                <span class="orbit-node-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="orbit-node-label">Microherramientas</span>
+                            </button>
+                        </div>
+
+                        <!-- Panel central -->
+                        <div class="orbit-core">
+                            <div class="orbit-panel is-active" id="orbit-panel-0" role="tabpanel"
+                                aria-labelledby="orbit-tab-0">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                        </path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Monitoreo inteligente de cámaras</h3>
+                                <p class="orbit-panel-desc">Detectá fallas, consultá estados y generá reportes
+                                    técnicos de cámaras, servidores o sistemas críticos desde un panel centralizado.
+                                </p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-1" role="tabpanel"
+                                aria-labelledby="orbit-tab-1">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="9" y1="13" x2="15" y2="13"></line>
+                                        <line x1="9" y1="17" x2="13" y2="17"></line>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Facturación simple para pymes, comercios y
+                                    profesionales</h3>
+                                <p class="orbit-panel-desc">Ordená clientes, productos, ventas y reportes con un
+                                    sistema adaptado a tu forma de trabajo, sin complejidades innecesarias.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-2" role="tabpanel"
+                                aria-labelledby="orbit-tab-2">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <circle cx="12" cy="10.5" r="2.5"></circle>
+                                        <path d="M7.5 18.5a4.7 4.7 0 0 1 9 0"></path>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Seguimiento comercial para inmobiliarias</h3>
+                                <p class="orbit-panel-desc">Organizá interesados, propiedades consultadas, próximos
+                                    contactos y oportunidades comerciales en una misma interfaz estructurada.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-3" role="tabpanel"
+                                aria-labelledby="orbit-tab-3">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 9a2 2 0 0 1-2 2H6l-3 3V4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2z"></path>
+                                        <path d="M18 9h1a2 2 0 0 1 2 2v9l-3-3h-6a2 2 0 0 1-2-2v-1"></path>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Automatización de consultas comerciales</h3>
+                                <p class="orbit-panel-desc">Centralizá consultas de distintos canales (WhatsApp,
+                                    Instagram, formularios), clasificá interesados y generá seguimientos
+                                    automáticos.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-4" role="tabpanel"
+                                aria-labelledby="orbit-tab-4">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                        <line x1="3" y1="20" x2="21" y2="20"></line>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Dashboards administrativos</h3>
+                                <p class="orbit-panel-desc">Convertí datos dispersos en reportes visuales de
+                                    ingresos, gastos, movimientos o actividad operativa del negocio.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-5" role="tabpanel"
+                                aria-labelledby="orbit-tab-5">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="4" y="8" width="16" height="12" rx="2"></rect>
+                                        <line x1="12" y1="8" x2="12" y2="5"></line>
+                                        <circle cx="12" cy="3.5" r="1.5"></circle>
+                                        <line x1="9" y1="13" x2="9" y2="14"></line>
+                                        <line x1="15" y1="13" x2="15" y2="14"></line>
+                                        <path d="M9.5 17h5"></path>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Asistentes internos con IA</h3>
+                                <p class="orbit-panel-desc">Creá asistentes personalizados para responder consultas
+                                    del equipo sobre información interna del negocio, generar documentos o
+                                    clasificar datos.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-6" role="tabpanel"
+                                aria-labelledby="orbit-tab-6">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="5" cy="12" r="2.5"></circle>
+                                        <circle cx="19" cy="6" r="2.5"></circle>
+                                        <circle cx="19" cy="18" r="2.5"></circle>
+                                        <line x1="7.2" y1="10.8" x2="16.8" y2="7.2"></line>
+                                        <line x1="7.2" y1="13.2" x2="16.8" y2="16.8"></line>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Flujos inteligentes con n8n</h3>
+                                <p class="orbit-panel-desc">Conectá formularios, planillas, bases de datos y
+                                    sistemas locales con herramientas en la nube para reducir el traspaso manual de
+                                    datos.</p>
+                            </div>
+                            <div class="orbit-panel" id="orbit-panel-7" role="tabpanel"
+                                aria-labelledby="orbit-tab-7">
+                                <span class="orbit-panel-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <h3 class="orbit-panel-title">Microherramientas a medida</h3>
+                                <p class="orbit-panel-desc">Resolvé tareas repetitivas y cuellos de botella
+                                    específicos con pequeñas aplicaciones web internas, hechas a la medida de tu
+                                    proceso.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="solutions-grid">
-                    <!-- Solución 1 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 1;">
-                        <h4 class="solution-title">Monitoreo inteligente de cámaras</h4>
-                        <p class="solution-text">
-                            Detectá fallas, consultá estados y generá reportes técnicos de cámaras, servidores o
-                            sistemas críticos desde un panel centralizado.
-                        </p>
-                    </div>
-
-                    <!-- Solución 2 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 2;">
-                        <h4 class="solution-title">Facturación simple para pymes, comercios y profesionales</h4>
-                        <p class="solution-text">
-                            Ordená clientes, productos, ventas y reportes con un sistema adaptado a tu forma de trabajo,
-                            sin complejidades innecesarias.
-                        </p>
-                    </div>
-
-                    <!-- Solución 3 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 3;">
-                        <h4 class="solution-title">Seguimiento comercial para inmobiliarias</h4>
-                        <p class="solution-text">
-                            Organizá interesados, propiedades consultadas, próximos contactos y oportunidades
-                            comerciales en una misma interfaz estructurada.
-                        </p>
-                    </div>
-
-                    <!-- Solución 4 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 4;">
-                        <h4 class="solution-title">Automatización de consultas comerciales</h4>
-                        <p class="solution-text">
-                            Centralizá consultas de distintos canales (WhatsApp, Instagram, formularios), clasificá
-                            interesados y generá seguimientos automáticos.
-                        </p>
-                    </div>
-
-                    <!-- Solución 5 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 5;">
-                        <h4 class="solution-title">Dashboards administrativos</h4>
-                        <p class="solution-text">
-                            Convertí datos dispersos en reportes visuales de ingresos, gastos, movimientos o actividad
-                            operativa del negocio.
-                        </p>
-                    </div>
-
-                    <!-- Solución 6 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 6;">
-                        <h4 class="solution-title">Asistentes internos con IA</h4>
-                        <p class="solution-text">
-                            Creá asistentes personalizados para responder consultas del equipo sobre información interna
-                            del negocio, generar documentos o clasificar datos.
-                        </p>
-                    </div>
-
-                    <!-- Solución 7 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 7;">
-                        <h4 class="solution-title">Flujos inteligentes con n8n</h4>
-                        <p class="solution-text">
-                            Conectá formularios, planillas, bases de datos y sistemas locales con herramientas en la
-                            nube para reducir el traspaso manual de datos.
-                        </p>
-                    </div>
-
-                    <!-- Solución 8 -->
-                    <div class="solution-card reveal-scroll reveal-stagger" style="--stagger-index: 8;">
-                        <h4 class="solution-title">Microherramientas a medida</h4>
-                        <p class="solution-text">
-                            Resolvé tareas repetitivas y cuellos de botella específicos con pequeñas aplicaciones web
-                            internas, hechas a la medida de tu proceso.
-                        </p>
+                    <!-- Controles -->
+                    <div class="orbit-controls">
+                        <button class="orbit-arrow" id="orbit-prev" type="button"
+                            aria-label="Ver solución anterior">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                        </button>
+                        <p class="orbit-counter"><span class="orbit-counter-current" id="orbit-counter">01</span> /
+                            08</p>
+                        <button class="orbit-arrow" id="orbit-next" type="button"
+                            aria-label="Ver solución siguiente">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                        <button class="orbit-sound-toggle" id="orbit-sound" type="button" aria-pressed="true"
+                            aria-label="Silenciar sonido de interacción">
+                            <svg class="orbit-sound-on" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            </svg>
+                            <svg class="orbit-sound-off" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                <line x1="23" y1="9" x2="17" y2="15"></line>
+                                <line x1="17" y1="9" x2="23" y2="15"></line>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
