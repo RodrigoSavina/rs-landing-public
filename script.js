@@ -168,6 +168,31 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- 2.5.1 Control de audio disponible mientras suena V3 ---
+    // La capa de video (donde vive el botón) se oculta al revelar el contenido,
+    // pero V3 sigue sonando: durante V3 el mismo botón pasa a posición fija.
+    const audioBtnHome = audioToggleBtn
+        ? { parent: audioToggleBtn.parentNode, next: audioToggleBtn.nextSibling }
+        : null;
+
+    function moveAudioButton(parent, before) {
+        const hadFocus = document.activeElement === audioToggleBtn;
+        parent.insertBefore(audioToggleBtn, before || null);
+        if (hadFocus) audioToggleBtn.focus({ preventScroll: true });
+    }
+
+    function floatAudioControl() {
+        if (!audioToggleBtn || audioToggleBtn.classList.contains("audio-toggle-btn--floating")) return;
+        moveAudioButton(document.body, null);
+        audioToggleBtn.classList.add("audio-toggle-btn--floating");
+    }
+
+    function dockAudioControl() {
+        if (!audioToggleBtn || !audioToggleBtn.classList.contains("audio-toggle-btn--floating")) return;
+        audioToggleBtn.classList.remove("audio-toggle-btn--floating");
+        moveAudioButton(audioBtnHome.parent, audioBtnHome.next);
+    }
+
     // --- 2.6 Autoplay con sonido — fallback silenciado + pulso en botón ---
     if (video1) {
         video1.muted = false;
@@ -188,11 +213,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Quitar cinematic-mode del body ya: el header empieza a transicionar a sus colores
         // normales y el capsule queda visible para recibir el video 3
         document.body.classList.remove("cinematic-mode");
+        // El control de audio sigue visible mientras suenan el puente y V3
+        floatAudioControl();
         // Arrancar V3 inmediatamente — el audio entra sin esperar el delay visual
         playHeaderVideo();
         // El título aparece 520ms después (transición visual)
         setTimeout(() => {
             if (heroDisplayContainer) heroDisplayContainer.classList.add("content-revealed");
+            releaseHeroSpace();
         }, 520);
     }
 
@@ -222,11 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.log("video 3 play rejected:", err);
+                dockAudioControl();
             });
         headerLogoVideo.addEventListener("ended", () => {
             headerLogoVideo.classList.add("fade-out");
             headerLogoFinal.classList.add("visible");
             document.body.classList.remove("intro-active");
+            dockAudioControl();
         }, { once: true });
     }
 
@@ -318,6 +348,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const replayBtn = document.getElementById("btn-replay-intro");
     if (replayBtn) {
         replayBtn.addEventListener("click", () => {
+            dockAudioControl();
+            // Mantener la altura actual del hero para que el replay no desplace la página
+            reserveHeroSpace();
             crossfadeStarted = false;
             v2BridgePreSeeked = false;
             if (heroAmbientFlashEl) heroAmbientFlashEl.classList.remove("active");
@@ -359,6 +392,55 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 50);
         });
     }
+
+    // --- 2.10 Reserva de altura del hero en mobile ---
+    // En mobile el contenido final es mucho más alto que el recuadro 16:9 de la intro:
+    // sin reserva, el revelado empuja toda la página hacia abajo (layout shift).
+    const heroSection = document.getElementById("inicio");
+    const heroContentLayer = document.getElementById("hero-content-layer");
+    const mobileHeroQuery = window.matchMedia("(max-width: 768px)");
+
+    function isHeroRevealed() {
+        return !!heroDisplayContainer && heroDisplayContainer.classList.contains("content-revealed");
+    }
+
+    // hero-mobile-reserved: solo mientras la intro mobile corre con la altura reservada;
+    // centra el video en ese espacio (ver styles.css) y se quita en el revelado.
+    function reserveHeroSpace() {
+        if (!heroSection || !heroDisplayContainer || !heroContentLayer) return;
+        heroSection.style.minHeight = "";
+        heroSection.classList.remove("hero-mobile-reserved");
+        if (!mobileHeroQuery.matches) return;
+        if (isHeroRevealed()) {
+            // Replay: se conserva la altura final y la intro vuelve a arrancar centrada
+            heroSection.style.minHeight = heroSection.offsetHeight + "px";
+            heroSection.classList.add("hero-mobile-reserved");
+            return;
+        }
+        // Altura natural del contenido final, medida sin pintar (la capa sigue oculta)
+        const previousHeight = heroContentLayer.style.height;
+        heroContentLayer.style.height = "auto";
+        const borders = heroDisplayContainer.offsetHeight - heroDisplayContainer.clientHeight;
+        const finalContainerHeight = heroContentLayer.offsetHeight + borders;
+        heroContentLayer.style.height = previousHeight;
+        const growth = finalContainerHeight - heroDisplayContainer.offsetHeight;
+        if (growth > 0) {
+            heroSection.style.minHeight = (heroSection.offsetHeight + growth) + "px";
+            heroSection.classList.add("hero-mobile-reserved");
+        }
+    }
+
+    function releaseHeroSpace() {
+        if (!heroSection) return;
+        heroSection.style.minHeight = "";
+        heroSection.classList.remove("hero-mobile-reserved");
+    }
+
+    reserveHeroSpace();
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { if (!isHeroRevealed()) reserveHeroSpace(); });
+    }
+    window.addEventListener("resize", () => { if (!isHeroRevealed()) reserveHeroSpace(); });
 
     // =========================================================================
     // 3. INTERACTIVIDAD MANUAL DE LA PIZARRA DE SOLUCIONES

@@ -768,6 +768,16 @@ body:not(.intro-active) .hero-circuit-bg {
     animation: soundCTAPulse 1.8s ease-in-out infinite;
 }
 
+/* Mientras suena V3 la capa de video ya no está: el mismo botón queda fijo en pantalla */
+.audio-toggle-btn.audio-toggle-btn--floating {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 1001;
+    width: 56px;
+    height: 56px;
+}
+
 /* --- Panel informativo de servicios --- */
 .hero-dynamic-panel {
     background-color: var(--bg-light-card);
@@ -2321,6 +2331,8 @@ body:not(.intro-active) .hero-circuit-bg {
     color: var(--accent-cyan);
     text-decoration: none;
     font-weight: 600;
+    /* El email no tiene espacios: sin esto fija el ancho mínimo de la columna y desborda la página */
+    overflow-wrap: anywhere;
     transition: var(--transition-smooth);
 }
 
@@ -2375,7 +2387,8 @@ body:not(.intro-active) .hero-circuit-bg {
 
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* minmax(0, …): el ancho intrínseco de los inputs no debe imponer un mínimo a la columna */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -2603,6 +2616,41 @@ body:not(.intro-active) .hero-circuit-bg {
 .hamburger-btn.active .hamburger-line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
 /* =========================================================================
+   NAVEGACIÓN DESPLEGABLE (≤ 1080px)
+   Por debajo de ~1080px la navegación de escritorio no entra en una línea
+   junto al logo y al CTA. El CTA del header sigue visible hasta 768px.
+   ========================================================================= */
+@media (max-width: 1080px) {
+    .hamburger-btn { display: flex; }
+
+    .nav-menu {
+        position: fixed;
+        top: var(--header-height);
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - var(--header-height));
+        background-color: var(--bg-dark-sec);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 48px;
+        gap: 32px;
+        z-index: 999;
+        /* Cerrado: fuera de pantalla y sin foco; visibility cambia al terminar el deslizamiento */
+        visibility: hidden;
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.4s;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-menu.open {
+        left: 0;
+        visibility: visible;
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s;
+    }
+
+    .nav-link { font-size: 1.25rem; color: var(--text-light); }
+}
+
+/* =========================================================================
    RESPONSIVE — TABLETS (≤ 1024px)
    ========================================================================= */
 @media (max-width: 1024px) {
@@ -2634,28 +2682,11 @@ body:not(.intro-active) .hero-circuit-bg {
 
     .main-header { height: 70px; }
 
-    /* Menú hamburguesa */
-    .hamburger-btn { display: flex; }
-
+    /* Menú hamburguesa: la base está en el bloque ≤ 1080px; acá solo cambia la altura del header */
     .nav-menu {
-        position: fixed;
         top: 70px;
-        left: -100%;
-        width: 100%;
         height: calc(100vh - 70px);
-        background-color: var(--bg-dark-sec);
-        flex-direction: column;
-        justify-content: flex-start;
-        padding-top: 48px;
-        gap: 32px;
-        z-index: 999;
-        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
-
-    .nav-menu.open { left: 0; }
-
-    .nav-link { font-size: 1.25rem; color: var(--text-light); }
 
     .nav-btn-mobile {
         display: inline-flex;
@@ -2676,6 +2707,28 @@ body:not(.intro-active) .hero-circuit-bg {
     .hero-section {
         padding-top: 70px;
         padding-bottom: 40px;
+    }
+
+    /* Intro con altura final reservada (clase puesta por script.js): el recuadro de video
+       se centra en la primera pantalla del espacio reservado (110px = padding superior +
+       inferior del hero) y el flash ambiental se limita a esa misma zona */
+    .hero-section.hero-mobile-reserved {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero-section.hero-mobile-reserved .hero-container {
+        flex: 1;
+        width: 100%;
+        max-height: calc(100vh - 110px);
+        max-height: calc(100svh - 110px);
+        justify-content: center;
+    }
+
+    .hero-section.hero-mobile-reserved .hero-ambient-flash {
+        bottom: auto;
+        height: min(100%, 100vh);
+        height: min(100%, 100svh);
     }
 
     .hero-content-layer { padding: 28px 20px; }
