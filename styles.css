@@ -1213,6 +1213,10 @@ body:not(.intro-active) .hero-circuit-bg {
     .orbit-node {
         transition-duration: 0.01ms;
     }
+
+    .partner-card.team-slide {
+        transition-duration: 0.01ms;
+    }
 }
 
 /* =========================================================================
@@ -2185,10 +2189,147 @@ body:not(.intro-active) .hero-circuit-bg {
     border-bottom: 1px solid var(--border-light);
 }
 
-.partners-grid {
+/* --- Carrusel del equipo: rueda de tres tarjetas reales; posición, escala y giro los fija script.js --- */
+.team-carousel {
+    position: relative;
+    /* Las laterales sobresalen de la tarjeta central pero nunca generan scroll horizontal */
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+}
+
+.team-carousel:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: -2px;
+}
+
+.team-stage {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    /* El relleno inferior deja la sombra de la tarjeta activa dentro de la máscara */
+    padding: 24px 0 64px;
+    perspective: 1600px;
+    touch-action: pan-y;
+    cursor: grab;
+    /* Donde el contenedor recorta las laterales, el corte se desvanece en lugar de ser seco */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+}
+
+.team-stage.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Las tres tarjetas ocupan la misma celda: la fila toma la altura de la más alta y todas la igualan.
+   Doble clase: debe ganarle al `transition: all` de .partner-card, que suavizaría (y retrasaría)
+   la transformación que script.js fija en cada fotograma. */
+.partner-card.team-slide {
+    grid-area: 1 / 1;
+    justify-self: center;
+    width: min(440px, 62%);
+    transform-origin: 50% 50%;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+    transition: border-color 0.3s ease, box-shadow 0.4s ease;
+}
+
+.team-slide.is-active {
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.13), 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.team-slide:not(.is-active) {
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+.team-slide img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.team-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: -24px;
+    /* Por encima del escenario (perspective y mask crean su propio contexto de apilamiento) */
+    position: relative;
+    z-index: 1;
+}
+
+.team-arrow {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-light-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.team-arrow:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--text-light);
+}
+
+.team-arrow:focus-visible,
+.team-dot:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+.team-dots {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Área táctil de 24px; el punto visible es el ::before */
+.team-dot {
+    min-width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.team-dot::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 5px;
+    background-color: var(--border-light);
+    transition: var(--transition-smooth);
+}
+
+.team-dot:hover::before { background-color: var(--accent-blue); opacity: 0.6; }
+
+.team-dot[aria-current="true"]::before {
+    width: 24px;
+    background-color: var(--accent-blue);
+    opacity: 1;
+}
+
+.team-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 .partner-card {
@@ -2658,7 +2799,6 @@ body:not(.intro-active) .hero-circuit-bg {
     .hero-container { gap: 32px; }
     .services-carousel { gap: 20px; }
     .service-card { flex-basis: clamp(260px, 68%, 560px); }
-    .partners-grid { grid-template-columns: 1fr; gap: 32px; }
     .orbit-stage {
         --stage-size: min(90vw, 620px);
         --orbit-radius: calc(var(--stage-size) * 0.40);
@@ -2870,7 +3010,10 @@ body:not(.intro-active) .hero-circuit-bg {
     .orbit-panel-title::after { margin-top: 10px; }
     .orbit-panel-desc { font-size: 0.86rem; max-width: 78%; }
 
-    .partners-grid { grid-template-columns: 1fr; }
+    /* Equipo: el carrusel ocupa todo el ancho de la pantalla para que las laterales asomen desde los bordes */
+    .team-carousel { margin-inline: -20px; border-radius: 0; }
+    .team-stage { -webkit-mask-image: none; mask-image: none; }
+    .partner-card.team-slide { width: min(82%, 400px); }
     .contact-layout { grid-template-columns: 1fr; gap: 48px; }
     .contact-info-column { position: static; }
     .contact-form-column { padding: 32px; }
@@ -2884,6 +3027,11 @@ body:not(.intro-active) .hero-circuit-bg {
    RESPONSIVE — MÓVIL PEQUEÑO (≤ 480px)
    ========================================================================= */
 @media (max-width: 480px) {
+
+    .team-slide .partner-info { padding: 24px; }
+    /* Las laterales asoman solo como foto, borde y profundidad: su texto se desvanece al salir del frente.
+       Sigue en el DOM y en el árbol de accesibilidad; --team-text lo calcula render() en script.js. */
+    .team-slide .partner-info { opacity: var(--team-text, 1); }
 
     .hero-title {
         font-size: 1.75rem;

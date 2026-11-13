@@ -1107,9 +1107,11 @@
                     </p>
                 </div>
 
-                <div class="partners-grid">
+                <!-- Carrusel circular del equipo: las tres tarjetas reales, sin clones; la posición la calcula script.js -->
+                <div class="team-carousel reveal-scroll" id="team-carousel" role="region" aria-roledescription="carrusel" aria-label="Perfiles del equipo" tabindex="0">
+                    <div class="team-stage" id="team-stage">
                     <!-- Perfil 1: Marina Marcos & Soledad Bueno -->
-                    <div class="partner-card reveal-scroll" style="--stagger-index: 1;">
+                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="1 de 3: Marina Marcos y Soledad Bueno">
                         <div class="partner-photo-placeholder has-photo">
                             <img src="assets/marina-soledad.png"
                                 alt="Foto de Marina Marcos y Soledad Bueno" class="partner-photo-img">
@@ -1126,7 +1128,7 @@
                     </div>
 
                     <!-- Perfil 2: Rodrigo Savina -->
-                    <div class="partner-card reveal-scroll" style="--stagger-index: 2;">
+                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="2 de 3: Rodrigo Savina">
                         <div class="partner-photo-placeholder has-photo">
                             <img src="assets/Foto%20de%20perfil%20de%20Rodrigo.png"
                                 alt="Foto profesional de Rodrigo Savina" class="partner-photo-img">
@@ -1143,7 +1145,7 @@
                     </div>
 
                     <!-- Perfil 3: Javier Flores -->
-                    <div class="partner-card reveal-scroll" style="--stagger-index: 3;">
+                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="3 de 3: Javier Flores">
                         <div class="partner-photo-placeholder has-photo">
                             <img src="assets/javier-flores.webp"
                                 alt="Imagen representativa del área de Seguridad, Redes y Energía"
@@ -1159,6 +1161,22 @@
                             </p>
                         </div>
                     </div>
+                    </div>
+
+                    <div class="team-controls">
+                        <button class="team-arrow" id="team-prev" type="button" aria-label="Ver perfil anterior">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <div class="team-dots" id="team-dots">
+                            <button class="team-dot" type="button" aria-label="Ver perfil de Marina Marcos y Soledad Bueno"></button>
+                            <button class="team-dot" type="button" aria-label="Ver perfil de Rodrigo Savina"></button>
+                            <button class="team-dot" type="button" aria-label="Ver perfil de Javier Flores"></button>
+                        </div>
+                        <button class="team-arrow" id="team-next" type="button" aria-label="Ver perfil siguiente">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                    <p class="team-status" id="team-status" aria-live="polite"></p>
                 </div>
             </div>
         </section>

@@ -1003,4 +1003,203 @@ document.addEventListener("DOMContentLoaded", () => {
         setActive(0);
     }
 
+    // =========================================================================
+    // 8. CARRUSEL DEL EQUIPO (#nosotros) — rueda de 3 tarjetas reales, sin clones
+    // =========================================================================
+    const teamCarousel = document.getElementById("team-carousel");
+
+    if (teamCarousel) {
+        const stage = document.getElementById("team-stage");
+        const slides = Array.from(stage.querySelectorAll(".team-slide"));
+        const dots = Array.from(document.querySelectorAll("#team-dots .team-dot"));
+        const prevBtn = document.getElementById("team-prev");
+        const nextBtn = document.getElementById("team-next");
+        const statusEl = document.getElementById("team-status");
+        const total = slides.length;
+        const names = slides.map((s) => s.querySelector(".partner-name").textContent.trim());
+        const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        const START_INDEX = 1;          // Rodrigo Savina al frente al cargar
+        const DURATION_MS = 480;
+        const ARC_DEG = 50;             // ángulo de la rueda entre tarjetas vecinas
+        const TILT_RATIO = 0.25;        // giro visible de la tarjeta: 1/4 del ángulo (≈12°)
+        const DEPTH_SCALE = 0.45;       // reducción de escala con la profundidad (≈0,84 en las laterales)
+        const SNAP_THRESHOLD = 0.18;    // fracción del paso que hay que arrastrar para cambiar de perfil
+        const FLICK_SPEED = 0.45;       // px/ms: un gesto rápido cambia aunque no llegue al umbral
+
+        // position: índice continuo que está al frente; target: índice entero hacia el que se anima
+        let position = START_INDEX;
+        let target = START_INDEX;
+        let step = 1;                   // px entre la tarjeta central y una lateral
+        let frame = null;
+        let drag = null;
+
+        const mod = (n) => ((n % total) + total) % total;
+        const reduceMotion = () => reduceMotionQuery.matches;
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        function measure() {
+            step = slides[0].offsetWidth * 0.78;
+        }
+
+        // Cada tarjeta se ubica sobre un arco: x = R·sen(θ), escala según cos(θ).
+        // rel se envuelve a [-1.5, 1.5]: la tarjeta que da la vuelta lo hace por detrás, ya invisible.
+        function render() {
+            const radius = step / Math.sin(ARC_DEG * Math.PI / 180);
+            slides.forEach((slide, i) => {
+                let rel = i - position;
+                rel -= total * Math.round(rel / total);
+                const dist = Math.min(Math.abs(rel), 1.5);
+                const theta = Math.sign(rel) * dist * ARC_DEG * Math.PI / 180;
+                const x = radius * Math.sin(theta);
+                const scale = 1 - DEPTH_SCALE * (1 - Math.cos(theta));
+                const tilt = reduceMotion() ? 0 : (theta * 180 / Math.PI) * TILT_RATIO; // el borde exterior se aleja
+                const opacity = dist <= 1 ? 1 - 0.18 * dist : Math.max(0, 0.82 * (1 - (dist - 1) / 0.5));
+                slide.style.transform = `translateX(${x.toFixed(1)}px) rotateY(${tilt.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
+                slide.style.opacity = opacity.toFixed(3);
+                slide.style.zIndex = String(Math.round(100 - dist * 40));
+                // Visibilidad del texto: 1 al frente, 0 desde media tarjeta de distancia (la usa solo el CSS de móvil pequeño)
+                slide.style.setProperty("--team-text", Math.max(0, 1 - dist / 0.5).toFixed(3));
+            });
+        }
+
+        function updateState(announce) {
+            const active = mod(target);
+            slides.forEach((slide, i) => {
+                slide.classList.toggle("is-active", i === active);
+                if (i === active) slide.setAttribute("aria-current", "true");
+                else slide.removeAttribute("aria-current");
+            });
+            dots.forEach((dot, i) => {
+                if (i === active) dot.setAttribute("aria-current", "true");
+                else dot.removeAttribute("aria-current");
+            });
+            if (announce && statusEl) statusEl.textContent = `Perfil ${active + 1} de ${total}: ${names[active]}`;
+        }
+
+        // Al terminar, se lleva el índice al rango 0…total-1; la vista no cambia porque rel es circular
+        function settle() {
+            const n = mod(target);
+            position = n;
+            target = n;
+            render();
+        }
+
+        function animateTo(newTarget) {
+            target = newTarget;
+            updateState(true);
+            if (frame) cancelAnimationFrame(frame);
+            const from = position;
+            const distance = Math.abs(target - from);
+            const duration = reduceMotion() ? 0 : DURATION_MS * Math.min(1.5, Math.max(0.6, distance));
+            if (!duration || !distance) { frame = null; settle(); return; }
+            const start = performance.now();
+            const tick = (now) => {
+                const t = Math.min(1, (now - start) / duration);
+                position = from + (target - from) * easeOutCubic(t);
+                render();
+                if (t < 1) frame = requestAnimationFrame(tick);
+                else { frame = null; settle(); }
+            };
+            frame = requestAnimationFrame(tick);
+        }
+
+        // API interna (también sirve como base para un autoplay futuro)
+        function go(delta) { animateTo(Math.round(target) + delta); }
+
+        function goTo(index) {
+            let diff = mod(index - mod(Math.round(target)));
+            if (diff > total / 2) diff -= total;
+            animateTo(Math.round(target) + diff);
+        }
+
+        // --- Flechas e indicadores ---
+        if (prevBtn) prevBtn.addEventListener("click", () => go(-1));
+        if (nextBtn) nextBtn.addEventListener("click", () => go(1));
+        dots.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
+
+        // --- Teclado: con foco en el carrusel o en sus controles ---
+        teamCarousel.addEventListener("keydown", (e) => {
+            if (e.altKey || e.ctrlKey || e.metaKey) return;
+            if (e.key === "ArrowRight") go(1);
+            else if (e.key === "ArrowLeft") go(-1);
+            else if (e.key === "Home") goTo(0);
+            else if (e.key === "End") goTo(total - 1);
+            else return;
+            e.preventDefault();
+            // En los indicadores el foco acompaña al perfil activo
+            if (e.target.classList.contains("team-dot")) dots[mod(target)].focus();
+        });
+
+        // --- Arrastre con mouse y swipe táctil (pointer events) ---
+        // touch-action: pan-y en CSS deja el scroll vertical al navegador; solo el gesto horizontal mueve la rueda.
+        stage.addEventListener("pointerdown", (e) => {
+            if (e.pointerType === "mouse" && e.button !== 0) return;
+            if (e.pointerType === "mouse") e.preventDefault(); // evita selección de texto al arrastrar
+            if (frame) { cancelAnimationFrame(frame); frame = null; }
+            drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, p0: position, moved: false, lastX: e.clientX, lastT: e.timeStamp, speed: 0,
+                slide: e.target.closest(".team-slide") };
+        });
+
+        stage.addEventListener("pointermove", (e) => {
+            if (!drag || e.pointerId !== drag.id) return;
+            const dx = e.clientX - drag.x0;
+            const dy = e.clientY - drag.y0;
+            if (!drag.moved) {
+                if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+                if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; } // gesto vertical: es scroll
+                drag.moved = true;
+                stage.setPointerCapture(e.pointerId);
+                stage.classList.add("is-dragging");
+            }
+            const dt = e.timeStamp - drag.lastT;
+            if (dt > 0) drag.speed = (e.clientX - drag.lastX) / dt;
+            drag.lastX = e.clientX;
+            drag.lastT = e.timeStamp;
+            position = drag.p0 - dx / step;
+            render();
+        });
+
+        function endDrag(e, cancelled) {
+            if (!drag || e.pointerId !== drag.id) return;
+            const d = drag;
+            drag = null;
+            stage.classList.remove("is-dragging");
+            const base = Math.round(d.p0);
+            if (!d.moved) {
+                // Toque o clic sin arrastre: una tarjeta lateral pasa al frente
+                if (!cancelled && d.slide && !d.slide.classList.contains("is-active")) goTo(slides.indexOf(d.slide));
+                else if (position !== base) animateTo(base);
+                return;
+            }
+            if (cancelled) { animateTo(base); return; }
+            const moved = position - d.p0;
+            let steps = Math.round(moved);
+            const recent = e.timeStamp - d.lastT < 100;
+            if (steps === 0 && (Math.abs(moved) > SNAP_THRESHOLD || (recent && Math.abs(d.speed) > FLICK_SPEED && Math.abs(moved) > 0.04))) {
+                steps = Math.sign(moved);
+            }
+            steps = Math.max(-(total - 1), Math.min(total - 1, steps));
+            animateTo(base + steps);
+        }
+
+        stage.addEventListener("pointerup", (e) => endDrag(e, false));
+        stage.addEventListener("pointercancel", (e) => endDrag(e, true));
+        stage.addEventListener("dragstart", (e) => e.preventDefault());
+
+        // --- Tamaño y preferencias ---
+        if ("ResizeObserver" in window) {
+            new ResizeObserver(() => { measure(); render(); }).observe(stage);
+        } else {
+            window.addEventListener("resize", () => { measure(); render(); });
+        }
+        if (typeof reduceMotionQuery.addEventListener === "function") {
+            reduceMotionQuery.addEventListener("change", render);
+        }
+
+        measure();
+        updateState(false);
+        render();
+    }
+
 });
