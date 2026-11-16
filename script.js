@@ -1004,51 +1004,267 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 8. CARRUSEL DEL EQUIPO (#nosotros) — rueda de 3 tarjetas reales, sin clones
+    // 8. EQUIPO (#nosotros) — datos, tarjetas, carrusel circular y perfil ampliado
+    //    8A. Carga y validación de datos: la única parte que cambia al pasar a una API
+    //    8B. Tarjetas · 8C. Carrusel · 8D. Perfil ampliado · 8E. Enlaces #perfil-{slug}
     // =========================================================================
-    const teamCarousel = document.getElementById("team-carousel");
 
-    if (teamCarousel) {
-        const stage = document.getElementById("team-stage");
-        const slides = Array.from(stage.querySelectorAll(".team-slide"));
-        const dots = Array.from(document.querySelectorAll("#team-dots .team-dot"));
-        const prevBtn = document.getElementById("team-prev");
-        const nextBtn = document.getElementById("team-next");
-        const statusEl = document.getElementById("team-status");
+    // --- 8A. Carga y validación ---------------------------------------------
+    const TEAM_DATA_URL = "data/equipo.json";
+    const TEAM_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    const TEAM_RESENA_MAX = 260;
+    const TEAM_HASH_PREFIX = "#perfil-";
+
+    const teamLog = (level, message, detail) => {
+        if (detail === undefined) console[level](`[equipo] ${message}`);
+        else console[level](`[equipo] ${message}`, detail);
+    };
+
+    // Fuente actual: JSON estático. Para migrar a una API o base de datos se reemplaza esta función.
+    async function fetchTeamSource() {
+        const response = await fetch(TEAM_DATA_URL, { cache: "no-cache" });
+        if (!response.ok) throw new Error(`HTTP ${response.status} al leer ${TEAM_DATA_URL}`);
+        return response.json();
+    }
+
+    /**
+     * Contrato estable para el resto de la sección, venga de donde venga el dato:
+     *   { integrantes: [{ id, slug, nombre, rol, resena_corta, imagen, imagen_alt, perfil_completo }],
+     *     inicial: índice del integrante destacado }
+     * Solo incluye integrantes activos y válidos, ordenados por `orden`. Nunca corrige ni guarda datos de origen.
+     */
+    async function loadTeamMembers(source = fetchTeamSource) {
+        return normalizeTeamData(await source());
+    }
+
+    const teamText = (value) => (typeof value === "string" ? value.trim() : "");
+
+    // Imagen: ruta relativa del sitio o https. Otros esquemas (javascript:, data:, http:) se rechazan.
+    function teamSafeImage(value) {
+        const v = teamText(value);
+        if (!v || v.startsWith("//")) return "";
+        if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return /^https:\/\//i.test(v) ? v : "";
+        return v;
+    }
+
+    // Enlaces externos del perfil ampliado: solo https
+    function teamSafeUrl(value) {
+        const v = teamText(value);
+        if (!v) return "";
+        try { return new URL(v).protocol === "https:" ? v : ""; } catch { return ""; }
+    }
+
+    // perfil_completo: null, o un objeto con al menos una sección con contenido.
+    // Todo es texto plano; nunca se interpreta HTML.
+    function normalizeTeamProfile(raw, slug) {
+        if (raw === null || raw === undefined) return null;
+        if (typeof raw !== "object" || Array.isArray(raw)) {
+            teamLog("error", `"${slug}": perfil_completo no es un objeto; se ignora`);
+            return null;
+        }
+        const list = (v) => (Array.isArray(v) ? v.filter((x) => x && typeof x === "object") : []);
+        const strings = (v) => (Array.isArray(v) ? v.map(teamText).filter(Boolean) : []);
+        const perfil = {
+            bio: (Array.isArray(raw.bio) ? strings(raw.bio) : teamText(raw.bio).split(/\n\s*\n/).map(teamText).filter(Boolean)),
+            especialidades: strings(raw.especialidades),
+            experiencia: list(raw.experiencia)
+                .map((e) => ({ cargo: teamText(e.cargo), organizacion: teamText(e.organizacion), periodo: teamText(e.periodo), descripcion: teamText(e.descripcion) }))
+                .filter((e) => e.cargo || e.organizacion),
+            formacion: list(raw.formacion)
+                .map((e) => ({ titulo: teamText(e.titulo), institucion: teamText(e.institucion), periodo: teamText(e.periodo) }))
+                .filter((e) => e.titulo || e.institucion),
+            certificaciones: list(raw.certificaciones)
+                .map((e) => ({ nombre: teamText(e.nombre), emisor: teamText(e.emisor), anio: e.anio == null ? "" : String(e.anio).trim(), url: teamSafeUrl(e.url) }))
+                .filter((e) => e.nombre),
+        };
+        if (!Object.values(perfil).some((section) => section.length)) {
+            teamLog("warn", `"${slug}": perfil_completo no tiene contenido; no se muestra «Ver perfil»`);
+            return null;
+        }
+        return perfil;
+    }
+
+    function normalizeTeamData(raw) {
+        const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.integrantes) ? raw.integrantes : null);
+        if (!list) throw new Error("los datos no contienen una lista de integrantes");
+
+        const ids = new Set();
+        const slugs = new Set();
+        const active = [];
+        list.forEach((item, pos) => {
+            const where = `integrante #${pos + 1}`;
+            if (!item || typeof item !== "object") {
+                teamLog("error", `${where}: no es un objeto; se omite`);
+                return;
+            }
+            const m = {
+                id: teamText(item.id), slug: teamText(item.slug), nombre: teamText(item.nombre), rol: teamText(item.rol),
+                resena_corta: teamText(item.resena_corta), imagen: teamSafeImage(item.imagen), imagen_alt: teamText(item.imagen_alt),
+            };
+            const problems = [];
+            if (!m.id) problems.push("falta id");
+            if (!TEAM_SLUG_RE.test(m.slug)) problems.push("slug ausente o inválido");
+            if (!m.nombre) problems.push("falta nombre");
+            if (!m.rol) problems.push("falta rol");
+            if (!m.resena_corta) problems.push("falta resena_corta");
+            if (typeof item.orden !== "number" || !Number.isFinite(item.orden)) problems.push("orden no numérico");
+            if (typeof item.activo !== "boolean") problems.push("activo no es booleano");
+            if (problems.length) {
+                teamLog("error", `${where} (${m.slug || m.id || "sin identificar"}) se omite: ${problems.join(", ")}`);
+                return;
+            }
+            if (ids.has(m.id) || slugs.has(m.slug)) {
+                teamLog("error", `${where}: id o slug repetido ("${m.id}" / "${m.slug}"); se omite`);
+                return;
+            }
+            ids.add(m.id);
+            slugs.add(m.slug);
+            if (!item.activo) return;
+
+            const length = [...m.resena_corta].length;
+            if (length > TEAM_RESENA_MAX) teamLog("warn", `"${m.slug}": la reseña corta tiene ${length} caracteres (máximo ${TEAM_RESENA_MAX}); se muestra sin recortar`);
+            if (teamText(item.imagen) && !m.imagen) teamLog("error", `"${m.slug}": ruta de imagen no permitida; se muestra sin foto`);
+            if (m.imagen && !m.imagen_alt) teamLog("warn", `"${m.slug}": falta imagen_alt`);
+            m.perfil_completo = normalizeTeamProfile(item.perfil_completo, m.slug);
+            active.push({ member: m, orden: item.orden, destacado: item.destacado === true });
+        });
+
+        if (!active.length) throw new Error("no hay integrantes activos válidos");
+        active.sort((a, b) => a.orden - b.orden); // estable: a igual orden se respeta el del archivo
+
+        // Debe haber exactamente un destacado. Si hay más, se elige el de menor orden solo para que la
+        // interfaz funcione; el error queda informado y los datos no se tocan.
+        const featured = active.filter((e) => e.destacado);
+        let inicial = 0;
+        if (!featured.length) {
+            teamLog("error", "no hay ningún integrante activo con destacado = true; se muestra primero el de menor orden");
+        } else {
+            if (featured.length > 1) {
+                teamLog("error", `hay ${featured.length} integrantes destacados (${featured.map((e) => e.member.slug).join(", ")}); debe haber uno solo. Se usa "${featured[0].member.slug}"`);
+            }
+            inicial = active.indexOf(featured[0]);
+        }
+        return { integrantes: active.map((e) => e.member), inicial };
+    }
+
+    // --- 8B. Tarjetas ---------------------------------------------------------
+    function renderTeamCards(stage, template, integrantes) {
+        const total = integrantes.length;
+        const slides = integrantes.map((m, i) => {
+            const slide = template.content.firstElementChild.cloneNode(true);
+            slide.dataset.slug = m.slug;
+            slide.setAttribute("aria-label", total > 1 ? `${i + 1} de ${total}: ${m.nombre}` : m.nombre);
+
+            const photo = slide.querySelector(".partner-photo-placeholder");
+            const img = photo.querySelector("img");
+            const withoutPhoto = () => { img.remove(); photo.classList.remove("has-photo"); };
+            if (m.imagen) {
+                img.setAttribute("src", m.imagen);
+                img.setAttribute("alt", m.imagen_alt);
+                img.addEventListener("error", () => {
+                    teamLog("error", `"${m.slug}": no se pudo cargar la imagen ${m.imagen}`);
+                    withoutPhoto();
+                }, { once: true });
+            } else {
+                withoutPhoto();
+            }
+
+            slide.querySelector(".partner-name").textContent = m.nombre;
+            slide.querySelector(".partner-brand").textContent = m.rol;
+            slide.querySelector(".partner-role").textContent = m.resena_corta;
+
+            const button = slide.querySelector(".team-profile-btn");
+            if (m.perfil_completo) {
+                button.hidden = false;
+                button.setAttribute("aria-label", `Ver perfil de ${m.nombre}`);
+            } else {
+                button.remove(); // sin contenido ampliado aprobado no hay botón
+            }
+            return slide;
+        });
+        stage.replaceChildren(...slides);
+        return slides;
+    }
+
+    // --- 8C. Carrusel ---------------------------------------------------------
+    // Rueda de N tarjetas reales, sin clones. 1 tarjeta: estática. 2: recorrido lineal (las flechas alternan).
+    // 3 o más: rueda circular; solo la activa y sus vecinas se ven, el resto queda detrás, oculto.
+    function createTeamCarousel({ root, stage, slides, names, controls, dotsWrap, counter, prevBtn, nextBtn, statusEl, startIndex }) {
         const total = slides.length;
-        const names = slides.map((s) => s.querySelector(".partner-name").textContent.trim());
+        const interactive = total > 1;
+        const linear = total === 2;           // con dos, envolver haría saltar la lateral de lado al arrastrar
         const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-        const START_INDEX = 1;          // Rodrigo Savina al frente al cargar
         const DURATION_MS = 480;
         const ARC_DEG = 50;             // ángulo de la rueda entre tarjetas vecinas
         const TILT_RATIO = 0.25;        // giro visible de la tarjeta: 1/4 del ángulo (≈12°)
         const DEPTH_SCALE = 0.45;       // reducción de escala con la profundidad (≈0,84 en las laterales)
         const SNAP_THRESHOLD = 0.18;    // fracción del paso que hay que arrastrar para cambiar de perfil
         const FLICK_SPEED = 0.45;       // px/ms: un gesto rápido cambia aunque no llegue al umbral
+        const MAX_DOTS = 7;             // desde 8 integrantes, contador «03 / 10»
 
         // position: índice continuo que está al frente; target: índice entero hacia el que se anima
-        let position = START_INDEX;
-        let target = START_INDEX;
+        let position = startIndex;
+        let target = startIndex;
         let step = 1;                   // px entre la tarjeta central y una lateral
         let frame = null;
         let drag = null;
+        let suppressClickUntil = 0;
 
         const mod = (n) => ((n % total) + total) % total;
         const reduceMotion = () => reduceMotionQuery.matches;
         const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+        const activeIndex = () => mod(Math.round(target));
+        const digits = Math.max(2, String(total).length);
+        const pad = (n) => String(n).padStart(digits, "0");
+
+        // --- Controles según la cantidad ---
+        let dots = [];
+        if (!interactive) {
+            // Una sola tarjeta: no es un carrusel ni recibe foco; sin flechas ni indicadores
+            root.removeAttribute("aria-roledescription");
+            root.removeAttribute("tabindex");
+            controls.hidden = true;
+        } else {
+            controls.hidden = false;
+            if (total <= MAX_DOTS) {
+                dots = names.map((name, i) => {
+                    const dot = document.createElement("button");
+                    dot.type = "button";
+                    dot.className = "team-dot";
+                    dot.setAttribute("aria-label", `Ir a la tarjeta de ${name}`);
+                    dot.addEventListener("click", () => goTo(i));
+                    return dot;
+                });
+                dotsWrap.replaceChildren(...dots);
+                dotsWrap.hidden = false;
+                counter.hidden = true;
+            } else {
+                dotsWrap.replaceChildren();
+                dotsWrap.hidden = true;
+                counter.hidden = false;
+            }
+        }
 
         function measure() {
             step = slides[0].offsetWidth * 0.78;
         }
 
+        // Posición relativa al frente. En la rueda se envuelve a [-N/2, N/2]: la tarjeta que da la vuelta
+        // lo hace por detrás, ya invisible. Con dos tarjetas no se envuelve.
+        function relativeOf(i) {
+            let rel = i - position;
+            if (!linear) rel -= total * Math.round(rel / total);
+            return rel;
+        }
+
         // Cada tarjeta se ubica sobre un arco: x = R·sen(θ), escala según cos(θ).
-        // rel se envuelve a [-1.5, 1.5]: la tarjeta que da la vuelta lo hace por detrás, ya invisible.
+        // Desde 1,5 posiciones del frente la tarjeta queda detrás, invisible y fuera del árbol de accesibilidad.
         function render() {
+            if (!interactive) return;
             const radius = step / Math.sin(ARC_DEG * Math.PI / 180);
             slides.forEach((slide, i) => {
-                let rel = i - position;
-                rel -= total * Math.round(rel / total);
+                const rel = relativeOf(i);
                 const dist = Math.min(Math.abs(rel), 1.5);
                 const theta = Math.sign(rel) * dist * ARC_DEG * Math.PI / 180;
                 const x = radius * Math.sin(theta);
@@ -1058,40 +1274,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 slide.style.transform = `translateX(${x.toFixed(1)}px) rotateY(${tilt.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
                 slide.style.opacity = opacity.toFixed(3);
                 slide.style.zIndex = String(Math.round(100 - dist * 40));
+                slide.style.visibility = dist >= 1.5 ? "hidden" : "";
                 // Visibilidad del texto: 1 al frente, 0 desde media tarjeta de distancia (la usa solo el CSS de móvil pequeño)
                 slide.style.setProperty("--team-text", Math.max(0, 1 - dist / 0.5).toFixed(3));
             });
         }
 
         function updateState(announce) {
-            const active = mod(target);
+            const active = activeIndex();
             slides.forEach((slide, i) => {
-                slide.classList.toggle("is-active", i === active);
-                if (i === active) slide.setAttribute("aria-current", "true");
+                const isActive = i === active;
+                slide.classList.toggle("is-active", isActive);
+                if (isActive) slide.setAttribute("aria-current", "true");
                 else slide.removeAttribute("aria-current");
+                // Solo el botón «Ver perfil» de la tarjeta activa entra en el orden de Tab
+                const button = slide.querySelector(".team-profile-btn");
+                if (button) button.tabIndex = isActive ? 0 : -1;
             });
             dots.forEach((dot, i) => {
                 if (i === active) dot.setAttribute("aria-current", "true");
                 else dot.removeAttribute("aria-current");
             });
+            if (!counter.hidden) counter.textContent = `${pad(active + 1)} / ${pad(total)}`;
             if (announce && statusEl) statusEl.textContent = `Perfil ${active + 1} de ${total}: ${names[active]}`;
         }
 
-        // Al terminar, se lleva el índice al rango 0…total-1; la vista no cambia porque rel es circular
+        // Al terminar, se lleva el índice al rango 0…N-1; la vista no cambia porque rel es circular
         function settle() {
-            const n = mod(target);
+            const n = activeIndex();
             position = n;
             target = n;
             render();
         }
 
-        function animateTo(newTarget) {
+        function animateTo(newTarget, { instant = false } = {}) {
             target = newTarget;
             updateState(true);
             if (frame) cancelAnimationFrame(frame);
             const from = position;
             const distance = Math.abs(target - from);
-            const duration = reduceMotion() ? 0 : DURATION_MS * Math.min(1.5, Math.max(0.6, distance));
+            const duration = instant || reduceMotion() ? 0 : DURATION_MS * Math.min(1.5, Math.max(0.6, distance));
             if (!duration || !distance) { frame = null; settle(); return; }
             const start = performance.now();
             const tick = (now) => {
@@ -1104,102 +1326,368 @@ document.addEventListener("DOMContentLoaded", () => {
             frame = requestAnimationFrame(tick);
         }
 
-        // API interna (también sirve como base para un autoplay futuro)
-        function go(delta) { animateTo(Math.round(target) + delta); }
+        // API del carrusel (también sirve de base para un autoplay futuro)
+        function go(delta) {
+            if (!interactive) return;
+            animateTo(linear ? mod(activeIndex() + delta) : Math.round(target) + delta);
+        }
 
-        function goTo(index) {
-            let diff = mod(index - mod(Math.round(target)));
+        function goTo(index, options) {
+            if (!interactive) return;
+            const destination = mod(index);
+            if (linear) { animateTo(destination, options); return; }
+            let diff = mod(destination - activeIndex()); // camino más corto alrededor de la rueda
             if (diff > total / 2) diff -= total;
-            animateTo(Math.round(target) + diff);
+            animateTo(Math.round(target) + diff, options);
         }
 
-        // --- Flechas e indicadores ---
-        if (prevBtn) prevBtn.addEventListener("click", () => go(-1));
-        if (nextBtn) nextBtn.addEventListener("click", () => go(1));
-        dots.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
+        if (interactive) {
+            // --- Flechas ---
+            prevBtn.addEventListener("click", () => go(-1));
+            nextBtn.addEventListener("click", () => go(1));
 
-        // --- Teclado: con foco en el carrusel o en sus controles ---
-        teamCarousel.addEventListener("keydown", (e) => {
-            if (e.altKey || e.ctrlKey || e.metaKey) return;
-            if (e.key === "ArrowRight") go(1);
-            else if (e.key === "ArrowLeft") go(-1);
-            else if (e.key === "Home") goTo(0);
-            else if (e.key === "End") goTo(total - 1);
-            else return;
-            e.preventDefault();
-            // En los indicadores el foco acompaña al perfil activo
-            if (e.target.classList.contains("team-dot")) dots[mod(target)].focus();
-        });
+            // --- Teclado: con foco en el carrusel o en sus controles ---
+            root.addEventListener("keydown", (e) => {
+                if (e.altKey || e.ctrlKey || e.metaKey) return;
+                if (e.key === "ArrowRight") go(1);
+                else if (e.key === "ArrowLeft") go(-1);
+                else if (e.key === "Home") goTo(0);
+                else if (e.key === "End") goTo(total - 1);
+                else return;
+                e.preventDefault();
+                // El foco acompaña al perfil activo cuando estaba en un indicador o en «Ver perfil»
+                const active = activeIndex();
+                if (e.target.classList.contains("team-dot") && dots[active]) dots[active].focus();
+                else if (e.target.classList.contains("team-profile-btn")) {
+                    const button = slides[active].querySelector(".team-profile-btn");
+                    (button || root).focus();
+                }
+            });
 
-        // --- Arrastre con mouse y swipe táctil (pointer events) ---
-        // touch-action: pan-y en CSS deja el scroll vertical al navegador; solo el gesto horizontal mueve la rueda.
-        stage.addEventListener("pointerdown", (e) => {
-            if (e.pointerType === "mouse" && e.button !== 0) return;
-            if (e.pointerType === "mouse") e.preventDefault(); // evita selección de texto al arrastrar
-            if (frame) { cancelAnimationFrame(frame); frame = null; }
-            drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, p0: position, moved: false, lastX: e.clientX, lastT: e.timeStamp, speed: 0,
-                slide: e.target.closest(".team-slide") };
-        });
+            // --- Arrastre con mouse y swipe táctil (pointer events) ---
+            // touch-action: pan-y en CSS deja el scroll vertical al navegador; solo el gesto horizontal mueve la rueda.
+            stage.addEventListener("pointerdown", (e) => {
+                if (e.pointerType === "mouse" && e.button !== 0) return;
+                if (e.pointerType === "mouse") e.preventDefault(); // evita selección de texto al arrastrar
+                if (frame) { cancelAnimationFrame(frame); frame = null; }
+                suppressClickUntil = 0;
+                drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, p0: position, moved: false, lastX: e.clientX, lastT: e.timeStamp, speed: 0,
+                    slide: e.target.closest(".team-slide") };
+            });
 
-        stage.addEventListener("pointermove", (e) => {
-            if (!drag || e.pointerId !== drag.id) return;
-            const dx = e.clientX - drag.x0;
-            const dy = e.clientY - drag.y0;
-            if (!drag.moved) {
-                if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-                if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; } // gesto vertical: es scroll
-                drag.moved = true;
-                stage.setPointerCapture(e.pointerId);
-                stage.classList.add("is-dragging");
+            stage.addEventListener("pointermove", (e) => {
+                if (!drag || e.pointerId !== drag.id) return;
+                const dx = e.clientX - drag.x0;
+                const dy = e.clientY - drag.y0;
+                if (!drag.moved) {
+                    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+                    if (Math.abs(dy) > Math.abs(dx)) { drag = null; return; } // gesto vertical: es scroll
+                    drag.moved = true;
+                    stage.setPointerCapture(e.pointerId);
+                    stage.classList.add("is-dragging");
+                }
+                const dt = e.timeStamp - drag.lastT;
+                if (dt > 0) drag.speed = (e.clientX - drag.lastX) / dt;
+                drag.lastX = e.clientX;
+                drag.lastT = e.timeStamp;
+                position = drag.p0 - dx / step;
+                if (linear) {
+                    // Con dos tarjetas, más allá de los extremos el arrastre ofrece resistencia
+                    if (position < 0) position *= 0.35;
+                    else if (position > 1) position = 1 + (position - 1) * 0.35;
+                }
+                render();
+            });
+
+            const endDrag = (e, cancelled) => {
+                if (!drag || e.pointerId !== drag.id) return;
+                const d = drag;
+                drag = null;
+                stage.classList.remove("is-dragging");
+                const base = Math.round(d.p0);
+                if (!d.moved) {
+                    // Toque o clic sin arrastre: una tarjeta lateral pasa al frente (y ese clic no abre nada)
+                    if (!cancelled && d.slide && !d.slide.classList.contains("is-active")) {
+                        suppressClickUntil = performance.now() + 500;
+                        goTo(slides.indexOf(d.slide));
+                    } else if (position !== base) animateTo(base);
+                    return;
+                }
+                suppressClickUntil = performance.now() + 500;
+                if (cancelled) { animateTo(base); return; }
+                const moved = position - d.p0;
+                let steps = Math.round(moved);
+                const recent = e.timeStamp - d.lastT < 100;
+                if (steps === 0 && (Math.abs(moved) > SNAP_THRESHOLD || (recent && Math.abs(d.speed) > FLICK_SPEED && Math.abs(moved) > 0.04))) {
+                    steps = Math.sign(moved);
+                }
+                if (linear) animateTo(Math.max(0, Math.min(1, base + steps)));
+                else animateTo(base + Math.max(-(total - 1), Math.min(total - 1, steps)));
+            };
+
+            stage.addEventListener("pointerup", (e) => endDrag(e, false));
+            stage.addEventListener("pointercancel", (e) => endDrag(e, true));
+            stage.addEventListener("dragstart", (e) => e.preventDefault());
+            // Un arrastre o el toque que trae una lateral al frente no deben activar botones de la tarjeta.
+            // Los clics de teclado (detail = 0) nunca se bloquean.
+            stage.addEventListener("click", (e) => {
+                if (e.detail !== 0 && performance.now() < suppressClickUntil) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+
+            // --- Tamaño y preferencias ---
+            if ("ResizeObserver" in window) {
+                new ResizeObserver(() => { measure(); render(); }).observe(stage);
+            } else {
+                window.addEventListener("resize", () => { measure(); render(); });
             }
-            const dt = e.timeStamp - drag.lastT;
-            if (dt > 0) drag.speed = (e.clientX - drag.lastX) / dt;
-            drag.lastX = e.clientX;
-            drag.lastT = e.timeStamp;
-            position = drag.p0 - dx / step;
-            render();
-        });
-
-        function endDrag(e, cancelled) {
-            if (!drag || e.pointerId !== drag.id) return;
-            const d = drag;
-            drag = null;
-            stage.classList.remove("is-dragging");
-            const base = Math.round(d.p0);
-            if (!d.moved) {
-                // Toque o clic sin arrastre: una tarjeta lateral pasa al frente
-                if (!cancelled && d.slide && !d.slide.classList.contains("is-active")) goTo(slides.indexOf(d.slide));
-                else if (position !== base) animateTo(base);
-                return;
+            if (typeof reduceMotionQuery.addEventListener === "function") {
+                reduceMotionQuery.addEventListener("change", render);
             }
-            if (cancelled) { animateTo(base); return; }
-            const moved = position - d.p0;
-            let steps = Math.round(moved);
-            const recent = e.timeStamp - d.lastT < 100;
-            if (steps === 0 && (Math.abs(moved) > SNAP_THRESHOLD || (recent && Math.abs(d.speed) > FLICK_SPEED && Math.abs(moved) > 0.04))) {
-                steps = Math.sign(moved);
-            }
-            steps = Math.max(-(total - 1), Math.min(total - 1, steps));
-            animateTo(base + steps);
-        }
-
-        stage.addEventListener("pointerup", (e) => endDrag(e, false));
-        stage.addEventListener("pointercancel", (e) => endDrag(e, true));
-        stage.addEventListener("dragstart", (e) => e.preventDefault());
-
-        // --- Tamaño y preferencias ---
-        if ("ResizeObserver" in window) {
-            new ResizeObserver(() => { measure(); render(); }).observe(stage);
-        } else {
-            window.addEventListener("resize", () => { measure(); render(); });
-        }
-        if (typeof reduceMotionQuery.addEventListener === "function") {
-            reduceMotionQuery.addEventListener("change", render);
         }
 
         measure();
         updateState(false);
         render();
+
+        return { go, goTo, get activeIndex() { return activeIndex(); } };
     }
+
+    // --- 8D. Perfil ampliado (<dialog> nativo) -------------------------------
+    // showModal() vuelve inerte el resto de la página y Escape cierra de forma nativa.
+    function createTeamProfileDialog({ dialog, sheet, closeBtn, nameEl, roleEl, photoWrap, photoImg, contentEl, fallbackFocus, onClosed }) {
+        const supportsModal = typeof dialog.showModal === "function";
+        let current = null;
+        let opener = null;
+
+        const make = (tag, className, text) => {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text) node.textContent = text;
+            return node;
+        };
+        const section = (title, body) => {
+            const block = make("section", "team-profile-section");
+            block.append(make("h3", "team-profile-heading", title), body);
+            return block;
+        };
+        const meta = (...parts) => make("span", "team-profile-meta", parts.filter(Boolean).join(" · "));
+
+        function fill(member) {
+            const p = member.perfil_completo;
+            nameEl.textContent = member.nombre;
+            roleEl.textContent = member.rol;
+            if (member.imagen) {
+                photoImg.setAttribute("src", member.imagen);
+                photoImg.setAttribute("alt", member.imagen_alt);
+                photoWrap.hidden = false;
+            } else {
+                photoImg.removeAttribute("src");
+                photoWrap.hidden = true;
+            }
+
+            const parts = [];
+            if (p.bio.length) {
+                const body = make("div", "team-profile-bio");
+                p.bio.forEach((text) => body.append(make("p", null, text)));
+                parts.push(section("Presentación", body));
+            }
+            if (p.especialidades.length) {
+                const ul = make("ul", "team-profile-tags");
+                p.especialidades.forEach((text) => ul.append(make("li", null, text)));
+                parts.push(section("Especialidades", ul));
+            }
+            const itemList = (items, build) => {
+                const ul = make("ul", "team-profile-list");
+                items.forEach((item) => { const li = make("li"); build(li, item); ul.append(li); });
+                return ul;
+            };
+            if (p.experiencia.length) {
+                parts.push(section("Experiencia", itemList(p.experiencia, (li, e) => {
+                    li.append(make("strong", null, e.cargo || e.organizacion), meta(e.cargo ? e.organizacion : "", e.periodo));
+                    if (e.descripcion) li.append(make("p", null, e.descripcion));
+                })));
+            }
+            if (p.formacion.length) {
+                parts.push(section("Formación", itemList(p.formacion, (li, e) => {
+                    li.append(make("strong", null, e.titulo || e.institucion), meta(e.titulo ? e.institucion : "", e.periodo));
+                })));
+            }
+            if (p.certificaciones.length) {
+                parts.push(section("Certificaciones", itemList(p.certificaciones, (li, e) => {
+                    if (e.url) {
+                        const link = make("a", null, e.nombre);
+                        link.href = e.url;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        const strong = make("strong");
+                        strong.append(link);
+                        li.append(strong);
+                    } else {
+                        li.append(make("strong", null, e.nombre));
+                    }
+                    li.append(meta(e.emisor, e.anio));
+                })));
+            }
+            contentEl.replaceChildren(...parts);
+        }
+
+        function open(member, from) {
+            current = member;
+            opener = from || null;
+            fill(member);
+            if (!dialog.open) {
+                document.documentElement.classList.add("team-profile-open");
+                if (supportsModal) dialog.showModal();
+                else dialog.setAttribute("open", "");
+            }
+            sheet.scrollTop = 0;
+            nameEl.focus({ preventScroll: true });
+        }
+
+        function close() {
+            if (!dialog.open) return;
+            if (supportsModal) dialog.close();
+            else { dialog.removeAttribute("open"); handleClose(); }
+        }
+
+        function handleClose() {
+            document.documentElement.classList.remove("team-profile-open");
+            const target = opener && opener.isConnected ? opener : fallbackFocus;
+            current = null;
+            opener = null;
+            if (target) target.focus({ preventScroll: true });
+            onClosed();
+        }
+
+        dialog.addEventListener("close", handleClose);
+        closeBtn.addEventListener("click", close);
+        // Clic fuera de la hoja (sobre el fondo oscurecido): cierra
+        dialog.addEventListener("click", (e) => { if (e.target === dialog) close(); });
+
+        return { open, close, isOpen: () => dialog.open, currentSlug: () => (current ? current.slug : null) };
+    }
+
+    // --- 8E. Enlaces #perfil-{slug} e historial ------------------------------
+    // Abrir desde «Ver perfil» agrega una entrada (#perfil-slug); cerrar la quita con history.back().
+    // Atrás/Adelante y los cambios de hash pasan por applyHash(), que es idempotente: no hay bucles.
+    function parseProfileHash(hash) {
+        if (!hash || !hash.startsWith(TEAM_HASH_PREFIX)) return null;
+        try { return decodeURIComponent(hash.slice(TEAM_HASH_PREFIX.length)); } catch { return ""; }
+    }
+
+    function initTeamProfileLinks({ root, stage, slides, integrantes, carousel, profile }) {
+        const buttonOf = (index) => slides[index].querySelector(".team-profile-btn");
+
+        function applyHash(onLoad) {
+            const slug = parseProfileHash(location.hash);
+            if (slug === null) {
+                if (profile.isOpen()) profile.close();
+                return;
+            }
+            const index = integrantes.findIndex((m) => m.slug === slug);
+            if (index < 0 || !integrantes[index].perfil_completo) {
+                teamLog("warn", `${location.hash} no corresponde a un perfil ampliado disponible; se ignora`);
+                if (profile.isOpen()) profile.close();
+                return;
+            }
+            if (profile.isOpen() && profile.currentSlug() === slug) return;
+            carousel.goTo(index, { instant: true });
+            if (onLoad || !profile.isOpen()) {
+                // Al cerrar, el visitante queda frente a la tarjeta de ese perfil
+                try { root.scrollIntoView({ block: "center", behavior: "instant" }); } catch { root.scrollIntoView({ block: "center" }); }
+            }
+            profile.open(integrantes[index], buttonOf(index));
+        }
+
+        stage.addEventListener("click", (e) => {
+            const button = e.target.closest(".team-profile-btn");
+            if (!button) return;
+            const index = slides.indexOf(button.closest(".team-slide"));
+            const member = integrantes[index];
+            if (!member || !member.perfil_completo) return;
+            const hash = TEAM_HASH_PREFIX + member.slug;
+            if (location.hash !== hash) history.pushState({ teamProfile: member.slug }, "", hash);
+            profile.open(member, button);
+        });
+
+        window.addEventListener("popstate", () => applyHash(false));
+        window.addEventListener("hashchange", () => applyHash(false));
+        applyHash(true);
+    }
+
+    // Al cerrar el perfil se restaura una URL coherente: si la entrada la agregó «Ver perfil», se vuelve atrás;
+    // si llegó por enlace directo, se quita el hash sin crear entradas nuevas.
+    function clearProfileHash() {
+        if (parseProfileHash(location.hash) === null) return;
+        if (history.state && history.state.teamProfile) history.back();
+        else history.replaceState(history.state, "", location.pathname + location.search);
+    }
+
+    // --- Inicio de la sección -------------------------------------------------
+    async function initTeamSection(root) {
+        const stage = document.getElementById("team-stage");
+        const controls = document.getElementById("team-controls");
+        const fallback = document.getElementById("team-fallback");
+        if (fallback) fallback.hidden = true;
+        root.setAttribute("aria-busy", "true");
+        root.classList.add("is-loading");
+        const doneLoading = () => { root.removeAttribute("aria-busy"); root.classList.remove("is-loading"); };
+
+        const showFallback = (error) => {
+            teamLog("error", "no se pudo mostrar el equipo; se muestra el mensaje de respaldo", error);
+            doneLoading();
+            root.removeAttribute("aria-roledescription");
+            root.removeAttribute("tabindex");
+            stage.replaceChildren();
+            stage.hidden = true;
+            controls.hidden = true;
+            if (fallback) fallback.hidden = false;
+        };
+
+        let data;
+        try {
+            data = await loadTeamMembers();
+        } catch (error) {
+            showFallback(error);
+            return;
+        }
+
+        try {
+            const slides = renderTeamCards(stage, document.getElementById("team-card-template"), data.integrantes);
+            doneLoading();
+            const carousel = createTeamCarousel({
+                root, stage, slides, controls,
+                names: data.integrantes.map((m) => m.nombre),
+                dotsWrap: document.getElementById("team-dots"),
+                counter: document.getElementById("team-counter"),
+                prevBtn: document.getElementById("team-prev"),
+                nextBtn: document.getElementById("team-next"),
+                statusEl: document.getElementById("team-status"),
+                startIndex: data.inicial,
+            });
+            const dialog = document.getElementById("team-profile");
+            const profile = createTeamProfileDialog({
+                dialog,
+                sheet: document.getElementById("team-profile-sheet"),
+                closeBtn: document.getElementById("team-profile-close"),
+                nameEl: document.getElementById("team-profile-name"),
+                roleEl: document.getElementById("team-profile-role"),
+                photoWrap: document.getElementById("team-profile-photo"),
+                photoImg: document.getElementById("team-profile-img"),
+                contentEl: document.getElementById("team-profile-content"),
+                fallbackFocus: root.hasAttribute("tabindex") ? root : null,
+                onClosed: clearProfileHash,
+            });
+            initTeamProfileLinks({ root, stage, slides, integrantes: data.integrantes, carousel, profile });
+        } catch (error) {
+            showFallback(error);
+        }
+    }
+
+    const teamCarousel = document.getElementById("team-carousel");
+    if (teamCarousel) initTeamSection(teamCarousel);
 
 });

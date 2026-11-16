@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "integrantes": [
+    {
+      "id": "eq-01",
+      "slug": "marina-marcos-soledad-bueno",
+      "nombre": "Marina Marcos y Soledad Bueno",
+      "rol": "Comunicación y Marketing Digital — Redes Sociales · Contenidos · Posicionamiento",
+      "resena_corta": "Aportan el desarrollo del área de comunicación y marketing digital, coordinando la presencia en redes sociales, la difusión de contenidos, la proyección de la marca y el acompañamiento en campañas orientadas al crecimiento comercial.",
+      "imagen": "assets/marina-soledad.png",
+      "imagen_alt": "Foto de Marina Marcos y Soledad Bueno",
+      "orden": 1,
+      "activo": true,
+      "destacado": false,
+      "perfil_completo": null
+    },
+    {
+      "id": "eq-02",
+      "slug": "rodrigo-savina",
+      "nombre": "Rodrigo Savina",
+      "rol": "EficyTec — Eficiencia y Tecnología",
+      "resena_corta": "Aporta la visión y experiencia en automatización de procesos, diseño funcional de flujos con n8n, desarrollo de soluciones con IA aplicada, ingeniería electrónica y consultoría de procesos comerciales.",
+      "imagen": "assets/Foto%20de%20perfil%20de%20Rodrigo.png",
+      "imagen_alt": "Foto profesional de Rodrigo Savina",
+      "orden": 2,
+      "activo": true,
+      "destacado": true,
+      "perfil_completo": null
+    },
+    {
+      "id": "eq-03",
+      "slug": "javier-flores",
+      "nombre": "Javier Flores",
+      "rol": "Seguridad · Redes · Energía",
+      "resena_corta": "Aporta la infraestructura y capacidad de soporte técnico, administración de servidores, bases de datos backend, seguridad electrónica, instalación de sistemas de cámaras, redes críticas e implementación en campo.",
+      "imagen": "assets/javier-flores.webp",
+      "imagen_alt": "Imagen representativa del área de Seguridad, Redes y Energía",
+      "orden": 3,
+      "activo": true,
+      "destacado": false,
+      "perfil_completo": null
+    }
+  ]
+}

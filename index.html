@@ -1107,77 +1107,56 @@
                     </p>
                 </div>
 
-                <!-- Carrusel circular del equipo: las tres tarjetas reales, sin clones; la posición la calcula script.js -->
+                <!-- Carrusel circular del equipo: las tarjetas se generan desde data/equipo.json (script.js, sección 8). Sin clones. -->
                 <div class="team-carousel reveal-scroll" id="team-carousel" role="region" aria-roledescription="carrusel" aria-label="Perfiles del equipo" tabindex="0">
-                    <div class="team-stage" id="team-stage">
-                    <!-- Perfil 1: Marina Marcos & Soledad Bueno -->
-                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="1 de 3: Marina Marcos y Soledad Bueno">
-                        <div class="partner-photo-placeholder has-photo">
-                            <img src="assets/marina-soledad.png"
-                                alt="Foto de Marina Marcos y Soledad Bueno" class="partner-photo-img">
-                        </div>
-                        <div class="partner-info">
-                            <h3 class="partner-name">Marina Marcos y Soledad Bueno</h3>
-                            <span class="partner-brand">Comunicación y Marketing Digital — Redes Sociales · Contenidos · Posicionamiento</span>
-                            <p class="partner-role">
-                                Aportan el desarrollo del área de comunicación y marketing digital, coordinando la
-                                presencia en redes sociales, la difusión de contenidos, la proyección de la marca y el
-                                acompañamiento en campañas orientadas al crecimiento comercial.
-                            </p>
-                        </div>
-                    </div>
+                    <div class="team-stage" id="team-stage"></div>
 
-                    <!-- Perfil 2: Rodrigo Savina -->
-                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="2 de 3: Rodrigo Savina">
-                        <div class="partner-photo-placeholder has-photo">
-                            <img src="assets/Foto%20de%20perfil%20de%20Rodrigo.png"
-                                alt="Foto profesional de Rodrigo Savina" class="partner-photo-img">
-                        </div>
-                        <div class="partner-info">
-                            <h3 class="partner-name">Rodrigo Savina</h3>
-                            <span class="partner-brand">EficyTec — Eficiencia y Tecnología</span>
-                            <p class="partner-role">
-                                Aporta la visión y experiencia en automatización de procesos, diseño funcional de flujos
-                                con n8n, desarrollo de soluciones con IA aplicada, ingeniería electrónica y consultoría
-                                de procesos comerciales.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Perfil 3: Javier Flores -->
-                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil" aria-label="3 de 3: Javier Flores">
-                        <div class="partner-photo-placeholder has-photo">
-                            <img src="assets/javier-flores.webp"
-                                alt="Imagen representativa del área de Seguridad, Redes y Energía"
-                                class="partner-photo-img">
-                        </div>
-                        <div class="partner-info">
-                            <h3 class="partner-name">Javier Flores</h3>
-                            <span class="partner-brand">Seguridad · Redes · Energía</span>
-                            <p class="partner-role">
-                                Aporta la infraestructura y capacidad de soporte técnico, administración de servidores,
-                                bases de datos backend, seguridad electrónica, instalación de sistemas de cámaras, redes
-                                críticas e implementación en campo.
-                            </p>
-                        </div>
-                    </div>
-                    </div>
-
-                    <div class="team-controls">
-                        <button class="team-arrow" id="team-prev" type="button" aria-label="Ver perfil anterior">
+                    <div class="team-controls" id="team-controls" hidden>
+                        <button class="team-arrow" id="team-prev" type="button" aria-label="Ir a la tarjeta anterior">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
                         </button>
-                        <div class="team-dots" id="team-dots">
-                            <button class="team-dot" type="button" aria-label="Ver perfil de Marina Marcos y Soledad Bueno"></button>
-                            <button class="team-dot" type="button" aria-label="Ver perfil de Rodrigo Savina"></button>
-                            <button class="team-dot" type="button" aria-label="Ver perfil de Javier Flores"></button>
-                        </div>
-                        <button class="team-arrow" id="team-next" type="button" aria-label="Ver perfil siguiente">
+                        <div class="team-dots" id="team-dots"></div>
+                        <p class="team-counter" id="team-counter" aria-hidden="true" hidden></p>
+                        <button class="team-arrow" id="team-next" type="button" aria-label="Ir a la tarjeta siguiente">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
                     </div>
                     <p class="team-status" id="team-status" aria-live="polite"></p>
+                    <!-- Visible sin JavaScript o si los datos no cargan; script.js lo oculta al iniciar -->
+                    <p class="team-fallback" id="team-fallback">Los perfiles del equipo no están disponibles en este momento.</p>
                 </div>
+
+                <!-- Molde de tarjeta: script.js lo completa con textContent para cada integrante -->
+                <template id="team-card-template">
+                    <div class="partner-card team-slide" role="group" aria-roledescription="perfil">
+                        <div class="partner-photo-placeholder has-photo">
+                            <img class="partner-photo-img" alt="">
+                        </div>
+                        <div class="partner-info">
+                            <h3 class="partner-name"></h3>
+                            <span class="partner-brand"></span>
+                            <p class="partner-role"></p>
+                            <button class="team-profile-btn" type="button" aria-haspopup="dialog" hidden>Ver perfil</button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Perfil ampliado: <dialog> nativo; solo se abre para integrantes con perfil_completo aprobado -->
+                <dialog class="team-profile" id="team-profile" aria-labelledby="team-profile-name">
+                    <div class="team-profile-sheet" id="team-profile-sheet">
+                        <button class="team-profile-close" id="team-profile-close" type="button" aria-label="Cerrar perfil">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                        <div class="team-profile-photo" id="team-profile-photo" hidden>
+                            <img id="team-profile-img" alt="">
+                        </div>
+                        <div class="team-profile-body">
+                            <h2 class="team-profile-name" id="team-profile-name" tabindex="-1"></h2>
+                            <p class="team-profile-role" id="team-profile-role"></p>
+                            <div class="team-profile-content" id="team-profile-content"></div>
+                        </div>
+                    </div>
+                </dialog>
             </div>
         </section>
 

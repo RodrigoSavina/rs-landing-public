@@ -2189,7 +2189,7 @@ body:not(.intro-active) .hero-circuit-bg {
     border-bottom: 1px solid var(--border-light);
 }
 
-/* --- Carrusel del equipo: rueda de tres tarjetas reales; posición, escala y giro los fija script.js --- */
+/* --- Carrusel del equipo: rueda de N tarjetas reales generadas desde data/equipo.json; posición, escala y giro los fija script.js --- */
 .team-carousel {
     position: relative;
     /* Las laterales sobresalen de la tarjeta central pero nunca generan scroll horizontal */
@@ -2220,7 +2220,7 @@ body:not(.intro-active) .hero-circuit-bg {
     -webkit-user-select: none;
 }
 
-/* Las tres tarjetas ocupan la misma celda: la fila toma la altura de la más alta y todas la igualan.
+/* Todas las tarjetas ocupan la misma celda: la fila toma la altura de la más alta y todas la igualan.
    Doble clase: debe ganarle al `transition: all` de .partner-card, que suavizaría (y retrasaría)
    la transformación que script.js fija en cada fotograma. */
 .partner-card.team-slide {
@@ -2330,6 +2330,246 @@ body:not(.intro-active) .hero-circuit-bg {
     overflow: hidden;
     clip: rect(0 0 0 0);
     white-space: nowrap;
+}
+
+/* Elementos que script.js muestra u oculta según la cantidad de integrantes o el estado de carga */
+.team-carousel [hidden],
+.team-profile [hidden] {
+    display: none !important;
+}
+
+/* Mientras llegan los datos se reserva un alto aproximado para que lo que sigue no salte */
+.team-carousel.is-loading .team-stage {
+    min-height: 600px;
+}
+
+/* Desde 8 integrantes, contador «03 / 10» en lugar de puntos */
+.team-counter {
+    min-width: 72px;
+    margin: 0;
+    text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-dark);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Visible sin JavaScript o si los datos no cargan */
+.team-fallback {
+    margin: 0;
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--text-muted-light);
+}
+
+/* «Ver perfil»: solo existe en tarjetas con contenido ampliado aprobado */
+.team-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 20px;
+    padding: 0 20px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    background: none;
+    color: var(--accent-blue);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.team-profile-btn:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--text-light);
+}
+
+.team-profile-btn:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+/* --- Perfil ampliado: <dialog> nativo; la hoja interior es la que se desplaza --- */
+html.team-profile-open {
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+
+.team-profile {
+    /* El reinicio global de márgenes anula el centrado nativo del diálogo modal */
+    margin: auto;
+    width: min(720px, calc(100% - 32px));
+    max-width: none;
+    max-height: min(85vh, 880px);
+    max-height: min(85dvh, 880px);
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    background-color: var(--bg-light-card);
+    color: var(--text-dark);
+    box-shadow: 0 30px 80px rgba(5, 11, 20, 0.35);
+    overflow: hidden;
+}
+
+.team-profile::backdrop {
+    background-color: rgba(5, 11, 20, 0.62);
+}
+
+.team-profile-sheet {
+    max-height: inherit;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Su bloque contenedor es el diálogo, no la hoja: queda fijo mientras el contenido se desplaza */
+.team-profile-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--border-light);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.team-profile-close:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: var(--text-light);
+}
+
+.team-profile-close:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+.team-profile-photo {
+    height: 240px;
+    background-color: #0f1c30;
+}
+
+.team-profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+
+.team-profile-body {
+    padding: 28px 32px 36px;
+}
+
+.team-profile-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    color: var(--text-dark);
+    margin: 0 56px 6px 0;
+}
+
+/* Recibe el foco al abrir (tabindex="-1") solo para que el lector empiece por el nombre */
+.team-profile-name:focus {
+    outline: none;
+}
+
+.team-profile-role {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin: 0 0 8px;
+}
+
+.team-profile-section {
+    margin-top: 24px;
+}
+
+.team-profile-heading {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted-light);
+    margin: 0 0 10px;
+}
+
+.team-profile-bio p,
+.team-profile-list p {
+    color: var(--text-muted-light);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin: 0 0 10px;
+}
+
+.team-profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.team-profile-tags li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: var(--bg-light-sec);
+    color: var(--text-dark);
+    font-size: 0.85rem;
+}
+
+.team-profile-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.team-profile-list li {
+    padding: 12px 0;
+    border-top: 1px solid var(--border-light);
+}
+
+.team-profile-list strong {
+    display: block;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.team-profile-list a {
+    color: var(--accent-blue);
+}
+
+.team-profile-meta {
+    display: block;
+    color: var(--text-muted-light);
+    font-size: 0.85rem;
+    margin: 2px 0 6px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .team-profile[open] { animation: team-profile-in 0.22s ease-out; }
+    .team-profile[open]::backdrop { animation: team-profile-fade 0.22s ease-out; }
+}
+
+@keyframes team-profile-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes team-profile-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .partner-card {
@@ -3032,6 +3272,10 @@ body:not(.intro-active) .hero-circuit-bg {
     /* Las laterales asoman solo como foto, borde y profundidad: su texto se desvanece al salir del frente.
        Sigue en el DOM y en el árbol de accesibilidad; --team-text lo calcula render() en script.js. */
     .team-slide .partner-info { opacity: var(--team-text, 1); }
+    /* Perfil ampliado a pantalla completa, con desplazamiento interno */
+    .team-profile { width: 100%; height: 100%; height: 100dvh; max-height: 100%; max-height: 100dvh; margin: 0; border-radius: 0; }
+    .team-profile-photo { height: 200px; }
+    .team-profile-body { padding: 24px 20px calc(32px + env(safe-area-inset-bottom, 0px)); }
 
     .hero-title {
         font-size: 1.75rem;
